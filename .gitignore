@@ -1,0 +1,61 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.local.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs and runtime output
+*.log
+logs/
+**/logs/
+tmp/
+temp/
+
+# Build/cache artifacts
+**/.next/
+**/.next-cache/
+**/.swc/
+**/test-results/
+**/playwright-report/
+coverage/
+
+# Node / frontend
+node_modules/
+**/node_modules/
+web/.next/
+web/out/
+web/build/
+web/coverage/
+
+# Go / backend
+server/bin/
+server/coverage.out
+**/*.test
+server/lib/*
+
+# Mobile
+mobile/.expo/
+mobile/.expo-shared/
+mobile/dist/
+
+# Docker and local infra
+docker-data/
+**/.docker/
+
+# Python / tooling (if used by scripts)
+__pycache__/
+*.pyc
+
+# Archives / backups
+*.zip
+*.tar
+*.tar.gz

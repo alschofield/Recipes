@@ -1,0 +1,72 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+          cache-dependency-path: server/go.sum
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Backend tests
+        run: go test ./server/...
+
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile
+
+      - name: Web build
+        run: pnpm --dir web build
+
+  deploy-web:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Trigger web deploy hook
+        env:
+          WEB_PROD_DEPLOY_HOOK: ${{ secrets.WEB_PROD_DEPLOY_HOOK }}
+        run: |
+          test -n "$WEB_PROD_DEPLOY_HOOK"
+          curl -fsS -X POST "$WEB_PROD_DEPLOY_HOOK"
+
+  deploy-api:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - API_RECIPES_PROD_DEPLOY_HOOK
+          - API_USERS_PROD_DEPLOY_HOOK
+          - API_FAVORITES_PROD_DEPLOY_HOOK
+    steps:
+      - name: Trigger API deploy hook
+        env:
+          API_RECIPES_PROD_DEPLOY_HOOK: ${{ secrets.API_RECIPES_PROD_DEPLOY_HOOK }}
+          API_USERS_PROD_DEPLOY_HOOK: ${{ secrets.API_USERS_PROD_DEPLOY_HOOK }}
+          API_FAVORITES_PROD_DEPLOY_HOOK: ${{ secrets.API_FAVORITES_PROD_DEPLOY_HOOK }}
+          SERVICE_KEY: ${{ matrix.service }}
+        run: |
+          URL=$(printenv "$SERVICE_KEY")
+          test -n "$URL"
+          curl -fsS -X POST "$URL"

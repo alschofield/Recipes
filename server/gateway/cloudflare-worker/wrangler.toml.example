@@ -1,0 +1,8 @@
+name = "recipes-api-gateway"
+main = "worker.js"
+compatibility_date = "2026-03-21"
+
+[vars]
+RECIPES_ORIGIN = "https://recipes-service-host.example.com"
+USERS_ORIGIN = "https://users-service-host.example.com"
+FAVORITES_ORIGIN = "https://favorites-service-host.example.com"

@@ -1,0 +1,133 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: recipes_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-recipes}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-recipes}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  recipes_server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.recipes
+    container_name: recipes_server
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-recipes}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS:-24}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      ERROR_WEBHOOK_URL: ${ERROR_WEBHOOK_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  users_server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.users
+    container_name: users_server
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-recipes}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_ISSUER: ${JWT_ISSUER:-recipes-users-server}
+      ERROR_WEBHOOK_URL: ${ERROR_WEBHOOK_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  favorites_server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.favorites
+    container_name: favorites_server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-recipes}
+      JWT_SECRET: ${JWT_SECRET:-changeme}
+      JWT_ISSUER: ${JWT_ISSUER:-recipes-users-server}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      ERROR_WEBHOOK_URL: ${ERROR_WEBHOOK_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: recipes_web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost}
+      NEXT_PUBLIC_API_RECIPES_URL: ${NEXT_PUBLIC_API_RECIPES_URL:-http://recipes_server:8081}
+      NEXT_PUBLIC_API_USERS_URL: ${NEXT_PUBLIC_API_USERS_URL:-http://users_server:8082}
+      NEXT_PUBLIC_API_FAVORITES_URL: ${NEXT_PUBLIC_API_FAVORITES_URL:-http://favorites_server:8080}
+      NEXT_PUBLIC_API_RECIPES_PORT: ${NEXT_PUBLIC_API_RECIPES_PORT:-8081}
+      NEXT_PUBLIC_API_USERS_PORT: ${NEXT_PUBLIC_API_USERS_PORT:-8082}
+      NEXT_PUBLIC_API_FAVORITES_PORT: ${NEXT_PUBLIC_API_FAVORITES_PORT:-8080}
+
+  redis:
+    image: redis:7-alpine
+    container_name: recipes_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: recipes_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ${NGINX_CONF_FILE:-./server/etc/nginx/nginx.local.conf}:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - recipes_server
+      - users_server
+      - favorites_server
+      - web
+
+volumes:
+  postgres_data:

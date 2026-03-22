@@ -1,0 +1,230 @@
+version: '3'
+
+vars:
+  POSTGRES_USER: '{{.POSTGRES_USER | default "postgres"}}'
+  POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD | default "changeme"}}'
+  POSTGRES_HOST: '{{.POSTGRES_HOST | default "localhost"}}'
+  POSTGRES_PORT: '{{.POSTGRES_PORT | default "5432"}}'
+  POSTGRES_DB: '{{.POSTGRES_DB | default "recipes"}}'
+  JWT_SECRET: '{{.JWT_SECRET | default "changeme"}}'
+  JWT_ISSUER: '{{.JWT_ISSUER | default "recipes-users-server"}}'
+  REDIS_URL: '{{.REDIS_URL | default "redis://localhost:6379"}}'
+  CORS_ALLOWED_ORIGINS: '{{.CORS_ALLOWED_ORIGINS | default "http://localhost:3000,http://localhost:8081"}}'
+  RECIPES_SERVER_PORT: '{{.RECIPES_SERVER_PORT | default "8081"}}'
+  USERS_SERVER_PORT: '{{.USERS_SERVER_PORT | default "8082"}}'
+  FAVORITES_SERVER_PORT: '{{.FAVORITES_SERVER_PORT | default "8080"}}'
+  API_URL: '{{.API_URL | default "http://localhost"}}'
+  API_BASE_URL: '{{.API_BASE_URL | default ""}}'
+  API_RECIPES_PORT: '{{.API_RECIPES_PORT | default "8081"}}'
+  API_USERS_PORT: '{{.API_USERS_PORT | default "8082"}}'
+  API_FAVORITES_PORT: '{{.API_FAVORITES_PORT | default "8080"}}'
+  DB_HOST_FOR_MIGRATE: '{{.DB_HOST_FOR_MIGRATE | default "host.docker.internal"}}'
+  CANONICAL_INGREDIENT_SEED: '{{.CANONICAL_INGREDIENT_SEED | default ""}}'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  setup:
+    desc: Install web deps, start infra, migrate, and seed
+    cmds:
+      - task: web-install
+      - task: infra-up
+      - task: migrate-up
+      - task: seed
+
+  check:
+    desc: Build web and run backend/web tests
+    cmds:
+      - task: web-build
+      - task: server-test
+      - task: web-test
+
+  infra-up:
+    desc: Start Postgres and Redis containers
+    cmds:
+      - docker compose up -d postgres redis
+
+  infra-down:
+    desc: Stop all compose services
+    cmds:
+      - docker compose down
+
+  infra-ps:
+    desc: Show compose service status
+    cmds:
+      - docker compose ps
+
+  infra-logs:
+    desc: Follow compose logs
+    cmds:
+      - docker compose logs -f
+
+  infra-restart:
+    desc: Restart Postgres and Redis
+    cmds:
+      - docker compose restart postgres redis
+
+  migrate-up:
+    desc: Apply SQL migrations
+    cmds:
+      - MSYS_NO_PATHCONV=1 docker run --rm -v "{{.TASKFILE_DIR}}/server/migrations:/migrations" migrate/migrate -path=/migrations -database "postgres://{{.POSTGRES_USER}}:{{.POSTGRES_PASSWORD}}@{{.DB_HOST_FOR_MIGRATE}}:{{.POSTGRES_PORT}}/{{.POSTGRES_DB}}?sslmode=disable" up
+
+  migrate-down:
+    desc: Roll back one migration
+    cmds:
+      - MSYS_NO_PATHCONV=1 docker run --rm -v "{{.TASKFILE_DIR}}/server/migrations:/migrations" migrate/migrate -path=/migrations -database "postgres://{{.POSTGRES_USER}}:{{.POSTGRES_PASSWORD}}@{{.DB_HOST_FOR_MIGRATE}}:{{.POSTGRES_PORT}}/{{.POSTGRES_DB}}?sslmode=disable" down 1
+
+  migrate-version:
+    desc: Show migration version
+    cmds:
+      - MSYS_NO_PATHCONV=1 docker run --rm -v "{{.TASKFILE_DIR}}/server/migrations:/migrations" migrate/migrate -path=/migrations -database "postgres://{{.POSTGRES_USER}}:{{.POSTGRES_PASSWORD}}@{{.DB_HOST_FOR_MIGRATE}}:{{.POSTGRES_PORT}}/{{.POSTGRES_DB}}?sslmode=disable" version
+
+  seed:
+    desc: Seed sample data
+    env:
+      POSTGRES_USER: '{{.POSTGRES_USER}}'
+      POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD}}'
+      POSTGRES_HOST: '{{.POSTGRES_HOST}}'
+      POSTGRES_PORT: '{{.POSTGRES_PORT}}'
+      POSTGRES_DB: '{{.POSTGRES_DB}}'
+      CANONICAL_INGREDIENT_SEED: '{{.CANONICAL_INGREDIENT_SEED}}'
+    cmds:
+      - task: seed-ingredients
+      - go run server/cmd/sample-data/main.go
+
+  seed-ingredients:
+    desc: Seed canonical ingredient enrichment data
+    env:
+      POSTGRES_USER: '{{.POSTGRES_USER}}'
+      POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD}}'
+      POSTGRES_HOST: '{{.POSTGRES_HOST}}'
+      POSTGRES_PORT: '{{.POSTGRES_PORT}}'
+      POSTGRES_DB: '{{.POSTGRES_DB}}'
+      CANONICAL_INGREDIENT_SEED: '{{.CANONICAL_INGREDIENT_SEED}}'
+    cmds:
+      - go run server/cmd/ingredient-seed/main.go
+
+  db-counts:
+    desc: Show seeded table counts
+    cmds:
+      - docker exec recipes_postgres psql -U {{.POSTGRES_USER}} -d {{.POSTGRES_DB}} -c "SELECT COUNT(*) AS ingredients FROM ingredients; SELECT COUNT(*) AS recipes FROM recipes; SELECT COUNT(*) AS aliases FROM ingredient_aliases;"
+
+  server-run-recipes:
+    desc: Run recipes API on localhost
+    env:
+      POSTGRES_USER: '{{.POSTGRES_USER}}'
+      POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD}}'
+      POSTGRES_HOST: '{{.POSTGRES_HOST}}'
+      POSTGRES_PORT: '{{.POSTGRES_PORT}}'
+      POSTGRES_DB: '{{.POSTGRES_DB}}'
+      JWT_SECRET: '{{.JWT_SECRET}}'
+      JWT_ISSUER: '{{.JWT_ISSUER}}'
+      REDIS_URL: '{{.REDIS_URL}}'
+      CORS_ALLOWED_ORIGINS: '{{.CORS_ALLOWED_ORIGINS}}'
+      RECIPES_SERVER_PORT: '{{.RECIPES_SERVER_PORT}}'
+    cmds:
+      - go run server/cmd/recipes-server/main.go
+
+  server-run-users:
+    desc: Run users API on localhost
+    env:
+      POSTGRES_USER: '{{.POSTGRES_USER}}'
+      POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD}}'
+      POSTGRES_HOST: '{{.POSTGRES_HOST}}'
+      POSTGRES_PORT: '{{.POSTGRES_PORT}}'
+      POSTGRES_DB: '{{.POSTGRES_DB}}'
+      JWT_SECRET: '{{.JWT_SECRET}}'
+      JWT_ISSUER: '{{.JWT_ISSUER}}'
+      REDIS_URL: '{{.REDIS_URL}}'
+      CORS_ALLOWED_ORIGINS: '{{.CORS_ALLOWED_ORIGINS}}'
+      USERS_SERVER_PORT: '{{.USERS_SERVER_PORT}}'
+    cmds:
+      - go run server/cmd/users-server/main.go
+
+  server-run-favorites:
+    desc: Run favorites API on localhost
+    env:
+      POSTGRES_USER: '{{.POSTGRES_USER}}'
+      POSTGRES_PASSWORD: '{{.POSTGRES_PASSWORD}}'
+      POSTGRES_HOST: '{{.POSTGRES_HOST}}'
+      POSTGRES_PORT: '{{.POSTGRES_PORT}}'
+      POSTGRES_DB: '{{.POSTGRES_DB}}'
+      JWT_SECRET: '{{.JWT_SECRET}}'
+      JWT_ISSUER: '{{.JWT_ISSUER}}'
+      REDIS_URL: '{{.REDIS_URL}}'
+      CORS_ALLOWED_ORIGINS: '{{.CORS_ALLOWED_ORIGINS}}'
+      FAVORITES_SERVER_PORT: '{{.FAVORITES_SERVER_PORT}}'
+    cmds:
+      - go run server/cmd/favorites-server/main.go
+
+  server-test:
+    desc: Run all backend tests
+    cmds:
+      - go test ./server/...
+
+  server-test-search:
+    desc: Run search package tests
+    cmds:
+      - go test ./server/pkg/search -run TestSearch
+
+  server-test-auth:
+    desc: Run auth middleware tests
+    cmds:
+      - go test ./server/pkg/middleware -run TestRequireAuth
+
+  web-install:
+    desc: Install web dependencies
+    cmds:
+      - pnpm --dir web install
+
+  web-dev:
+    desc: Start web dev server
+    env:
+      NEXT_PUBLIC_API_BASE_URL: '{{.API_BASE_URL}}'
+      NEXT_PUBLIC_API_URL: '{{.API_URL}}'
+      NEXT_PUBLIC_API_RECIPES_PORT: '{{.API_RECIPES_PORT}}'
+      NEXT_PUBLIC_API_USERS_PORT: '{{.API_USERS_PORT}}'
+      NEXT_PUBLIC_API_FAVORITES_PORT: '{{.API_FAVORITES_PORT}}'
+    cmds:
+      - pnpm --dir web dev
+
+  web-build:
+    desc: Build web app
+    env:
+      NEXT_PUBLIC_API_BASE_URL: '{{.API_BASE_URL}}'
+      NEXT_PUBLIC_API_URL: '{{.API_URL}}'
+      NEXT_PUBLIC_API_RECIPES_PORT: '{{.API_RECIPES_PORT}}'
+      NEXT_PUBLIC_API_USERS_PORT: '{{.API_USERS_PORT}}'
+      NEXT_PUBLIC_API_FAVORITES_PORT: '{{.API_FAVORITES_PORT}}'
+    cmds:
+      - pnpm --dir web build
+
+  web-start:
+    desc: Start web production server
+    cmds:
+      - pnpm --dir web start
+
+  web-lint:
+    desc: Lint web project
+    cmds:
+      - pnpm --dir web lint
+
+  web-test:
+    desc: Run web unit tests
+    cmds:
+      - pnpm --dir web test
+
+  web-e2e:
+    desc: Run full Playwright suite
+    cmds:
+      - pnpm --dir web test:e2e
+
+  health:
+    desc: Check local API health endpoints
+    cmds:
+      - curl -fsS http://localhost:8081/recipes/health
+      - curl -fsS http://localhost:8082/users/health
+      - curl -fsS http://localhost:8080/favorites/health

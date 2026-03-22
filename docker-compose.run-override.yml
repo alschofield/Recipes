@@ -1,0 +1,4 @@
+services:
+  favorites_server:
+    ports:
+      - "8085:8080"
