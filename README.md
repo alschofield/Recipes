@@ -238,7 +238,7 @@ These are provider deploy webhooks (for example Vercel/Render/Railway service ho
 
 This repo includes public collaboration and governance files:
 
-- `LICENSE` - MIT license
+- `LICENSE` - all rights reserved (no use without permission)
 - `CONTRIBUTING.md` - contribution workflow and standards
 - `SECURITY.md` - vulnerability reporting guidance
 - `.github/ISSUE_TEMPLATE/bug_report.md` - structured bug intake (repro steps, expected/actual behavior, environment)
