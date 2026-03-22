@@ -43,8 +43,53 @@ jobs:
       - name: Web build
         run: pnpm --dir web build
 
-  deploy-web:
+  deploy-readiness:
     needs: verify
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      web_ready: ${{ steps.check.outputs.web_ready }}
+      api_ready: ${{ steps.check.outputs.api_ready }}
+      web_missing: ${{ steps.check.outputs.web_missing }}
+      api_missing: ${{ steps.check.outputs.api_missing }}
+    steps:
+      - name: Check deploy hooks
+        id: check
+        env:
+          WEB_STAGING_DEPLOY_HOOK: ${{ secrets.WEB_STAGING_DEPLOY_HOOK }}
+          API_RECIPES_STAGING_DEPLOY_HOOK: ${{ secrets.API_RECIPES_STAGING_DEPLOY_HOOK }}
+          API_USERS_STAGING_DEPLOY_HOOK: ${{ secrets.API_USERS_STAGING_DEPLOY_HOOK }}
+          API_FAVORITES_STAGING_DEPLOY_HOOK: ${{ secrets.API_FAVORITES_STAGING_DEPLOY_HOOK }}
+        run: |
+          web_ready='true'
+          api_ready='true'
+          web_missing=''
+          api_missing=''
+
+          if [ -z "$WEB_STAGING_DEPLOY_HOOK" ]; then
+            web_ready='false'
+            web_missing='WEB_STAGING_DEPLOY_HOOK'
+          fi
+
+          for key in API_RECIPES_STAGING_DEPLOY_HOOK API_USERS_STAGING_DEPLOY_HOOK API_FAVORITES_STAGING_DEPLOY_HOOK; do
+            value=$(printenv "$key")
+            if [ -z "$value" ]; then
+              api_ready='false'
+              if [ -n "$api_missing" ]; then
+                api_missing="$api_missing, "
+              fi
+              api_missing="$api_missing$key"
+            fi
+          done
+
+          echo "web_ready=$web_ready" >> "$GITHUB_OUTPUT"
+          echo "api_ready=$api_ready" >> "$GITHUB_OUTPUT"
+          echo "web_missing=$web_missing" >> "$GITHUB_OUTPUT"
+          echo "api_missing=$api_missing" >> "$GITHUB_OUTPUT"
+
+  deploy-web:
+    needs: [verify, deploy-readiness]
+    if: ${{ needs.deploy-readiness.outputs.web_ready == 'true' }}
     runs-on: ubuntu-latest
     environment: staging
     steps:
@@ -55,8 +100,18 @@ jobs:
           test -n "$WEB_STAGING_DEPLOY_HOOK"
           curl -fsS -X POST "$WEB_STAGING_DEPLOY_HOOK"
 
+  deploy-web-skipped:
+    needs: [verify, deploy-readiness]
+    if: ${{ needs.deploy-readiness.outputs.web_ready != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Web deploy not configured
+        run: |
+          echo "Skipping staging web deploy: missing secret(s): ${{ needs.deploy-readiness.outputs.web_missing }}"
+
   deploy-api:
-    needs: verify
+    needs: [verify, deploy-readiness]
+    if: ${{ needs.deploy-readiness.outputs.api_ready == 'true' }}
     runs-on: ubuntu-latest
     environment: staging
     strategy:
@@ -77,3 +132,12 @@ jobs:
           URL=$(printenv "$SERVICE_KEY")
           test -n "$URL"
           curl -fsS -X POST "$URL"
+
+  deploy-api-skipped:
+    needs: [verify, deploy-readiness]
+    if: ${{ needs.deploy-readiness.outputs.api_ready != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: API deploy not configured
+        run: |
+          echo "Skipping staging API deploy: missing secret(s): ${{ needs.deploy-readiness.outputs.api_missing }}"
