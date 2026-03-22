@@ -18,7 +18,7 @@ List exactly what you ran:
 
 ```bash
 # examples
-go test ./server/...
+(cd server && go test ./...)
 pnpm --dir web test
 pnpm --dir web build
 pnpm --dir web test:e2e

@@ -60,9 +60,9 @@ make server-test-auth
 Or:
 
 ```bash
-go test ./server/...
-go test ./server/pkg/search -run TestSearch
-go test ./server/pkg/middleware -run TestRequireAuth
+(cd server && go test ./...)
+(cd server && go test ./pkg/search -run TestSearch)
+(cd server && go test ./pkg/middleware -run TestRequireAuth)
 ```
 
 ## Database and migrations

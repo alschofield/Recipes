@@ -115,13 +115,13 @@ server-run-favorites:
 	POSTGRES_USER=$(POSTGRES_USER) POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) POSTGRES_HOST=$(POSTGRES_HOST) POSTGRES_PORT=$(POSTGRES_PORT) POSTGRES_DB=$(POSTGRES_DB) JWT_SECRET=$(JWT_SECRET) JWT_ISSUER=$(JWT_ISSUER) REDIS_URL=$(REDIS_URL) CORS_ALLOWED_ORIGINS=$(CORS_ALLOWED_ORIGINS) FAVORITES_SERVER_PORT=$(FAVORITES_SERVER_PORT) go run server/cmd/favorites-server/main.go
 
 server-test:
-	go test ./server/...
+	(cd server && go test ./...)
 
 server-test-search:
-	go test ./server/pkg/search -run TestSearch
+	(cd server && go test ./pkg/search -run TestSearch)
 
 server-test-auth:
-	go test ./server/pkg/middleware -run TestRequireAuth
+	(cd server && go test ./pkg/middleware -run TestRequireAuth)
 
 web-install:
 	pnpm --dir web install

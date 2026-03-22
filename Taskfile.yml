@@ -162,18 +162,21 @@ tasks:
 
   server-test:
     desc: Run all backend tests
+    dir: server
     cmds:
-      - go test ./server/...
+      - go test ./...
 
   server-test-search:
     desc: Run search package tests
+    dir: server
     cmds:
-      - go test ./server/pkg/search -run TestSearch
+      - go test ./pkg/search -run TestSearch
 
   server-test-auth:
     desc: Run auth middleware tests
+    dir: server
     cmds:
-      - go test ./server/pkg/middleware -run TestRequireAuth
+      - go test ./pkg/middleware -run TestRequireAuth
 
   web-install:
     desc: Install web dependencies

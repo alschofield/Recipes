@@ -28,7 +28,8 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
 
       - name: Backend tests
-        run: go test ./server/...
+        working-directory: server
+        run: go test ./...
 
       - name: Install web dependencies
         run: pnpm --dir web install --frozen-lockfile
