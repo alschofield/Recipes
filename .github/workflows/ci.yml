@@ -94,6 +94,6 @@ jobs:
 
       - name: Build Docker images
         run: |
-          docker build -f server/Dockerfile.recipes -t recipes-server:latest .
-          docker build -f server/Dockerfile.users -t users-server:latest .
-          docker build -f server/Dockerfile.favorites -t favorites-server:latest .
+          docker build -f server/Dockerfile.recipes -t recipes-server:latest server
+          docker build -f server/Dockerfile.users -t users-server:latest server
+          docker build -f server/Dockerfile.favorites -t favorites-server:latest server
