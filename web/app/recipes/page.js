@@ -16,11 +16,13 @@ export default async function RecipesPage({ searchParams }) {
     ? String(qp?.sort)
     : 'updated_desc'
   const page = Math.max(1, Number(qp?.page || 1) || 1)
+  const complexQuery = String(qp?.complex || '').toLowerCase() === 'true'
 
   const ingredients = ingredientsRaw
     .split(',')
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean)
+  const complex = complexQuery || ingredients.length >= 10
 
   let results = null
   let catalog = { items: [], total: 0, page, pageSize: 20 }
@@ -31,6 +33,7 @@ export default async function RecipesPage({ searchParams }) {
       results = await serverPost(endpoints.recipes, '/recipes/search', {
         ingredients,
         mode,
+        complex,
         pagination: { page: 1, pageSize: 20 },
       }, session?.token)
     } catch (e) {
@@ -60,7 +63,8 @@ export default async function RecipesPage({ searchParams }) {
 
     const q = String(formData.get('ingredients') || '')
     const m = String(formData.get('mode') || 'strict')
-    redirect(`/recipes?ingredients=${encodeURIComponent(q)}&mode=${encodeURIComponent(m)}`)
+    const c = String(formData.get('complex') || '').toLowerCase() === 'true'
+    redirect(`/recipes?ingredients=${encodeURIComponent(q)}&mode=${encodeURIComponent(m)}&complex=${c ? 'true' : 'false'}`)
   }
 
   return (
@@ -83,8 +87,15 @@ export default async function RecipesPage({ searchParams }) {
             <option value="strict">Strict</option>
             <option value="inclusive">Inclusive</option>
           </select>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <input type="checkbox" name="complex" value="true" defaultChecked={complex} />
+            Complex mode
+          </label>
           <button type="submit" className="btn btn-primary">Search</button>
         </div>
+        <p className="muted" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+          Auto-enabled at 10+ ingredients.
+        </p>
       </form>
 
       <form method="GET" className="card pantry-wrap" style={{ marginBottom: '1rem' }}>
@@ -146,6 +157,7 @@ export default async function RecipesPage({ searchParams }) {
                         <input type="hidden" name="recipeID" value={recipe.id} />
                         <input type="hidden" name="ingredients" value={ingredientsRaw} />
                         <input type="hidden" name="mode" value={mode} />
+                        <input type="hidden" name="complex" value={complex ? 'true' : 'false'} />
                         <button className="btn btn-primary" type="submit">Add Favorite</button>
                       </form>
                     )}
@@ -191,6 +203,7 @@ export default async function RecipesPage({ searchParams }) {
                         <input type="hidden" name="recipeID" value={recipe.id} />
                         <input type="hidden" name="ingredients" value={ingredientsRaw} />
                         <input type="hidden" name="mode" value={mode} />
+                        <input type="hidden" name="complex" value={complex ? 'true' : 'false'} />
                         <button className="btn btn-primary" type="submit">Add Favorite</button>
                       </form>
                     )}

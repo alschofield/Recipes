@@ -55,6 +55,20 @@ docker-data/
 __pycache__/
 *.pyc
 
+# LLM workspace local artifacts
+llm/train/artifacts/*
+!llm/train/artifacts/.gitkeep
+llm/train/datasets/raw/
+llm/train/datasets/processed/
+llm/judge/tmp/
+llm/evals/results/_scratch/
+
+# Dataset workspace heavy source files (keep derived summaries/seeds tracked)
+datasets/raw/server-lib/*.zip
+datasets/raw/server-lib/*.json
+datasets/raw/server-lib/*.csv
+!datasets/raw/server-lib/.gitkeep
+
 # Archives / backups
 *.zip
 *.tar

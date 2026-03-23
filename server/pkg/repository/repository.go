@@ -42,6 +42,7 @@ type IngredientRepo interface {
 type SearchRequest struct {
 	Ingredients []string          `json:"ingredients"`
 	Mode        string            `json:"mode"`
+	Complex     bool              `json:"complex,omitempty"`
 	Filters     SearchFilters     `json:"filters,omitempty"`
 	Pagination  PaginationRequest `json:"pagination,omitempty"`
 }

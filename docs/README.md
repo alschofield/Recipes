@@ -1,23 +1,63 @@
 # Recipes Docs
 
-This folder contains project decisions that should be treated as source-of-truth references for implementation and tests.
+This folder has contracts, rollout plans, and LLM ops notes. Keep contracts tight and avoid duplicating rules across multiple files.
 
-## Core Decision Docs
+## Start Here (Source of Truth)
 
-- `search-contract.md` - Exact behavior for strict/inclusive ingredient search, ranking, and response shape.
-- `auth-security-baseline.md` - Authentication approach, authorization rules, and minimum security controls.
-- `llm-fallback-contract.md` - DB-first search policy, fallback triggers, generation schema, and persistence rules.
-- `architecture.md` - Repository structure, service map, development quick-start, and known issues.
-- `domain-language.md` - Entity definitions, service boundaries, domain events, and language rules.
+- `server/search-contract.md` - request/response behavior for recipe search.
+- `server/auth-security-baseline.md` - authn/authz and baseline security controls.
+- `llm/fallback-contract.md` - DB-first + LLM fallback rules, schema, health/metrics endpoint.
+- Folder indexes: `server/README.md`, `ops/README.md`, `product/README.md`, `llm/README.md`, `archive/README.md`.
 
-## Usage
+## LLM Runbook Set
 
-1. Implement features to match these contracts.
-2. Write tests directly against these contracts.
-3. Update docs first when behavior changes, then update code/tests.
+- `llm/local-docker-setup.md` - local Docker/Ollama setup and smoke checks.
+- `llm/local-benchmark-snapshot.md` - latest measured local benchmark outcomes.
+- `llm/model-stats-matrix.md` - model/license/cost/eval matrix.
+- `llm/serving-options.md` - provider/serving architecture options tradeoffs.
+- `llm/serving-infra-blueprints.md` - concrete self-hosted serving blueprint.
+- `llm/finetune-model-shortlist.md` - QLoRA candidate plan and bakeoff guidance.
+- LLM workspace lanes live under `../llm/` (`evals/`, `train/`, `judge/`).
+- LLM release gate doc: `../llm/PRODUCTION-READINESS.md`.
 
-## Model Guidance For Decision Docs
+## Deployment and Operations
 
-- Primary: `GPT-5.3 Codex Spark`
-- Fallback: `GPT-5.2 Codex`
-- Backup: `GPT-5.1 Codex`
+- `ops/deployment-plan.md` - staged rollout, env variables, and release gates.
+- `ops/operations-runbook.md` - incident/ops checklists and runtime procedures.
+- `ops/provider-setup-template.md` - private env/provider setup template.
+- `ops/provider-onboarding-checklist.md` - provider setup validation checklist.
+- `ops/hosting-strategy.md` - deployment and host tradeoff notes.
+- `ops/session-handoff-2026-03-23.md` - preserved progress snapshot and next actions.
+
+## Product and Domain Reference
+
+- `server/architecture.md` - service map and repository structure.
+- `server/ingredient-governance.md` - ingredient normalization/governance process.
+- `product/domain-language.md` - shared domain terminology.
+- `product/ad-monetization-policy.md` - native ad guardrails and disclosure policy.
+- `product/design-modernization-v1.md` - UI modernization direction notes.
+
+## Templates
+
+- `llm/eval-scorecard-template.md`
+- `llm/data-provenance-manifest-template.md`
+
+## Doc Hygiene Rules
+
+1. Keep normative behavior in contract docs only.
+2. Keep rollout steps in `deployment-plan.md` instead of scattering checklists.
+3. Keep historical benchmark details in benchmark docs; link from contracts instead of duplicating values.
+
+## Checklist Index
+
+- Root: `../CHECKLIST.md`
+- Server: `../server/CHECKLIST.md`
+- Web: `../web/CHECKLIST.md`
+- LLM: `../llm/CHECKLIST.md`
+- Mobile: `../mobile/CHECKLIST.md`
+
+## Dataset Index
+
+- `../datasets/README.md`
+- `../datasets/raw/README.md`
+- `../datasets/derived/README.md`

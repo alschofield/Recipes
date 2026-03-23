@@ -1,0 +1,25 @@
+{
+  "runId": "",
+  "date": "",
+  "judgeModel": "",
+  "task": "ingredient_metadata|recipe_quality",
+  "dataset": {
+    "name": "",
+    "version": "",
+    "sampleCount": 0
+  },
+  "metrics": {
+    "schemaPassRatePercent": 0,
+    "highConfidenceSharePercent": 0,
+    "manualAgreementPercent": 0,
+    "fallbackTriggeredPercent": 0
+  },
+  "thresholds": {
+    "minConfidence": 0.0,
+    "approveThreshold": 0.0
+  },
+  "decision": {
+    "outcome": "iterate",
+    "notes": ""
+  }
+}

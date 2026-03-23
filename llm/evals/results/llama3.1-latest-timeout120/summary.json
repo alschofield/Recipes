@@ -1,0 +1,14 @@
+{
+  "model": "llama3.1:latest",
+  "base_url": "http://localhost:11434/v1",
+  "recipe_total": 5,
+  "safety_total": 4,
+  "schema_total": 8,
+  "schema_pass": 7,
+  "schema_pass_rate_percent": 87.5,
+  "safety_pass": 1,
+  "safety_pass_rate_percent": 33.33333333333333,
+  "avg_latency_ms": 92146.99026666737,
+  "p95_latency_ms": 118658.51762000239,
+  "generated_at_unix": 1774213264
+}

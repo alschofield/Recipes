@@ -1,0 +1,18 @@
+services:
+  llm_trainer:
+    image: pytorch/pytorch:2.4.1-cuda12.1-cudnn9-runtime
+    container_name: recipes_llm_trainer
+    working_dir: /workspace
+    gpus: all
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../../:/workspace
+      - trainer_cache:/root/.cache
+    environment:
+      HF_HOME: /root/.cache/huggingface
+      TRANSFORMERS_CACHE: /root/.cache/huggingface
+    command: ["bash"]
+
+volumes:
+  trainer_cache:

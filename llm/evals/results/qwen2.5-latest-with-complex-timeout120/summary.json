@@ -1,0 +1,17 @@
+{
+  "model": "qwen2.5:latest",
+  "base_url": "http://localhost:11434/v1",
+  "recipe_total": 5,
+  "safety_total": 4,
+  "complex_total": 4,
+  "schema_total": 13,
+  "schema_pass": 13,
+  "schema_pass_rate_percent": 100.0,
+  "safety_pass": 2,
+  "safety_pass_rate_percent": 50.0,
+  "complex_pass": 0,
+  "complex_pass_rate_percent": 0.0,
+  "avg_latency_ms": 16078.451815383653,
+  "p95_latency_ms": 29811.543439998048,
+  "generated_at_unix": 1774217440
+}

@@ -14,8 +14,8 @@ This folder contains three Go HTTP services and supporting backend assets.
 
 - `pkg/` - domain/application packages
 - `migrations/` - SQL migration files
-- `lib/` - bundled datasets used by seeding/search
-- `lib/derived/` - generated consolidated seed artifacts (`canonical_ingredient_seed_v1.*`)
+- `../datasets/raw/server-lib/` - bundled source datasets used by seeding/search
+- `../datasets/derived/server-lib/` - generated consolidated seed artifacts (`canonical_ingredient_seed_v1.*`)
 - `etc/nginx/` - nginx local/prod routing config
 - `gateway/cloudflare-worker/` - single-domain API gateway option for split hosting
 - `scripts/db/` - backup/restore helper scripts
@@ -108,6 +108,6 @@ Most important:
 
 ## Operational docs
 
-- Architecture: [`../docs/architecture.md`](../docs/architecture.md)
-- Security/Auth baseline: [`../docs/auth-security-baseline.md`](../docs/auth-security-baseline.md)
-- Operations runbook: [`../docs/operations-runbook.md`](../docs/operations-runbook.md)
+- Architecture: [`../docs/server/architecture.md`](../docs/server/architecture.md)
+- Security/Auth baseline: [`../docs/server/auth-security-baseline.md`](../docs/server/auth-security-baseline.md)
+- Operations runbook: [`../docs/ops/operations-runbook.md`](../docs/ops/operations-runbook.md)

@@ -1,0 +1,14 @@
+{
+  "input": "lib\\derived\\unified_ingredient_index.csv",
+  "output": "lib\\derived\\canonical_ingredient_seed_v1.csv",
+  "rows": 1769,
+  "quality": {
+    "min": 0.18,
+    "max": 1.0
+  },
+  "analysis_status_counts": {
+    "enriched": 1010,
+    "pending": 759,
+    "review_required": 0
+  }
+}

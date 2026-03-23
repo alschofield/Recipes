@@ -1,0 +1,14 @@
+{
+  "model": "gemma3:latest",
+  "base_url": "http://localhost:11434/v1",
+  "recipe_total": 5,
+  "safety_total": 4,
+  "schema_total": 8,
+  "schema_pass": 7,
+  "schema_pass_rate_percent": 87.5,
+  "safety_pass": 2,
+  "safety_pass_rate_percent": 50.0,
+  "avg_latency_ms": 19834.436977778547,
+  "p95_latency_ms": 57842.113539989805,
+  "generated_at_unix": 1774212151
+}

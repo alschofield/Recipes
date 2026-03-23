@@ -31,7 +31,7 @@ func main() {
 
 	seedPath := strings.TrimSpace(os.Getenv("CANONICAL_INGREDIENT_SEED"))
 	if seedPath == "" {
-		seedPath = filepath.FromSlash("server/lib/derived/canonical_ingredient_seed_v1.csv")
+		seedPath = filepath.FromSlash("datasets/derived/server-lib/canonical_ingredient_seed_v1.csv")
 	}
 
 	handle, err := os.Open(seedPath)

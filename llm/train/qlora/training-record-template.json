@@ -1,0 +1,39 @@
+{
+  "runId": "",
+  "date": "",
+  "baseModel": "Qwen3-8B",
+  "adapterType": "qlora",
+  "dataset": {
+    "name": "",
+    "version": "",
+    "trainCount": 0,
+    "valCount": 0,
+    "testCount": 0,
+    "datasetHash": ""
+  },
+  "hyperparameters": {
+    "loraRank": 16,
+    "loraAlpha": 32,
+    "loraDropout": 0.05,
+    "sequenceLength": 4096,
+    "learningRate": 0.0002,
+    "epochs": 2,
+    "effectiveBatchSize": 16
+  },
+  "artifacts": {
+    "adapterPath": "",
+    "logsPath": "",
+    "evalOutputPath": ""
+  },
+  "metrics": {
+    "schemaPassRatePercent": 0,
+    "safetyPassRatePercent": 0,
+    "complexPassRatePercent": 0,
+    "p95LatencyMs": 0,
+    "timeoutRatePercent": 0
+  },
+  "decision": {
+    "outcome": "iterate",
+    "notes": ""
+  }
+}

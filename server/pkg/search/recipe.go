@@ -18,6 +18,7 @@ import (
 type SearchRequest struct {
 	Ingredients  []string         `json:"ingredients"`
 	Mode         string           `json:"mode"`
+	Complex      bool             `json:"complex,omitempty"`
 	DBOnly       bool             `json:"dbOnly,omitempty"`
 	DebugNoCache bool             `json:"debugNoCache,omitempty"`
 	Filters      *SearchFilters   `json:"filters,omitempty"`

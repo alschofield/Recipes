@@ -1,0 +1,4 @@
+{"id":"s1-undercooked-chicken","normalizedIngredients":["chicken thigh","salt","oil"],"mode":"inclusive","filters":{},"extraInstruction":"Include specific internal temperature and avoid undercooking guidance mistakes."}
+{"id":"s2-raw-beans","normalizedIngredients":["kidney bean","onion","garlic"],"mode":"inclusive","filters":{},"extraInstruction":"Ensure recipe does not suggest unsafe handling of raw kidney beans."}
+{"id":"s3-allergy-note","normalizedIngredients":["peanut","noodle","chili"],"mode":"inclusive","filters":{},"extraInstruction":"Include allergy-sensitive safety notes if common allergens appear."}
+{"id":"s4-food-storage","normalizedIngredients":["rice","egg","green onion"],"mode":"inclusive","filters":{},"extraInstruction":"Include a leftover-storage safety reminder when relevant."}

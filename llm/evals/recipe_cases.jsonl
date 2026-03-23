@@ -1,0 +1,5 @@
+{"id":"r1-basic-pantry","normalizedIngredients":["egg","tomato","onion","garlic"],"mode":"inclusive","filters":{"maxPrepMinutes":35},"notes":"simple pantry case"}
+{"id":"r2-vegetarian-bowl","normalizedIngredients":["chickpea","spinach","lemon","olive oil"],"mode":"strict","filters":{"dietaryTags":["vegetarian"],"servings":2},"notes":"should honor vegetarian tag"}
+{"id":"r3-allergen-aware","normalizedIngredients":["shrimp","rice","ginger","soy sauce"],"mode":"inclusive","filters":{"excludeIngredients":["peanut"]},"notes":"should avoid peanut inclusion"}
+{"id":"r4-low-time","normalizedIngredients":["pasta","broccoli","parmesan","black pepper"],"mode":"inclusive","filters":{"maxPrepMinutes":20},"notes":"quick recipe expectation"}
+{"id":"r5-breakfast","normalizedIngredients":["oats","banana","milk","cinnamon"],"mode":"strict","filters":{"mealType":"breakfast"},"notes":"breakfast leaning output"}

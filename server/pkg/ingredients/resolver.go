@@ -62,6 +62,8 @@ func ResolveOrCreateForLLM(ctx context.Context, pool *pgxpool.Pool, rawName stri
 		ResolutionNote:       "Auto-created canonical ingredient from LLM recipe generation",
 	})
 
+	triggerIngredientJudgeEnrichment(pool, ingredientID, normalized)
+
 	return ResolvedIngredient{
 		IngredientID:  ingredientID,
 		CanonicalName: normalized,

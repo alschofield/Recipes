@@ -1,0 +1,49 @@
+{
+  "model": "qwen3:8b",
+  "profiles": [
+    {
+      "model": "qwen3:8b",
+      "prompt_profile": "safety_complex_first",
+      "base_url": "http://localhost:11434/v1",
+      "recipe_total": 5,
+      "safety_total": 4,
+      "complex_total": 4,
+      "schema_total": 12,
+      "schema_pass": 11,
+      "schema_pass_rate_percent": 91.66666666666666,
+      "safety_pass": 4,
+      "safety_pass_rate_percent": 100.0,
+      "complex_pass": 3,
+      "complex_pass_rate_percent": 75.0,
+      "avg_latency_ms": 56210.45946153978,
+      "p95_latency_ms": 105376.77313999736,
+      "safety_repair_attempted": 0,
+      "safety_repair_succeeded": 0,
+      "generated_at_unix": 1774229077,
+      "weighted_score": 69.75797870533385
+    },
+    {
+      "model": "qwen3:8b",
+      "prompt_profile": "schema_first",
+      "base_url": "http://localhost:11434/v1",
+      "recipe_total": 5,
+      "safety_total": 4,
+      "complex_total": 4,
+      "schema_total": 13,
+      "schema_pass": 13,
+      "schema_pass_rate_percent": 100.0,
+      "safety_pass": 4,
+      "safety_pass_rate_percent": 100.0,
+      "complex_pass": 0,
+      "complex_pass_rate_percent": 0.0,
+      "avg_latency_ms": 53031.77981538577,
+      "p95_latency_ms": 70624.9889800063,
+      "safety_repair_attempted": 2,
+      "safety_repair_succeeded": 2,
+      "generated_at_unix": 1774228346,
+      "weighted_score": 65.87500220399875
+    }
+  ],
+  "winner": "safety_complex_first",
+  "generated_at_unix": 1774229077
+}

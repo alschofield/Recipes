@@ -1,0 +1,14 @@
+{
+  "model": "mistral:latest",
+  "base_url": "http://localhost:11434/v1",
+  "recipe_total": 5,
+  "safety_total": 4,
+  "schema_total": 9,
+  "schema_pass": 6,
+  "schema_pass_rate_percent": 66.66666666666666,
+  "safety_pass": 2,
+  "safety_pass_rate_percent": 50.0,
+  "avg_latency_ms": 23788.654788888784,
+  "p95_latency_ms": 31993.039419996785,
+  "generated_at_unix": 1774214671
+}

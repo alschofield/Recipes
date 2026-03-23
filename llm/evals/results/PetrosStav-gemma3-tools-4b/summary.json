@@ -1,0 +1,14 @@
+{
+  "model": "PetrosStav/gemma3-tools:4b",
+  "base_url": "http://localhost:11434/v1",
+  "recipe_total": 5,
+  "safety_total": 4,
+  "schema_total": 9,
+  "schema_pass": 7,
+  "schema_pass_rate_percent": 77.77777777777779,
+  "safety_pass": 1,
+  "safety_pass_rate_percent": 25.0,
+  "avg_latency_ms": 9493.175800000447,
+  "p95_latency_ms": 11080.034340001293,
+  "generated_at_unix": 1774212258
+}

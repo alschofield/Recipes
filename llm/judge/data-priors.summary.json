@@ -1,0 +1,199 @@
+{
+  "generated_at": "2026-03-23T03:53:22.876723+00:00",
+  "sources": {
+    "canonical_seed": "datasets/derived/server-lib/canonical_ingredient_seed_v1.csv",
+    "kaggle_train": "datasets/raw/server-lib/kaggle ingredients dataset.zip::train.json"
+  },
+  "canonical_seed": {
+    "rows": 1769,
+    "analysis_status_counts": {
+      "enriched": 1010,
+      "pending": 759
+    },
+    "quality": {
+      "min": 0.18,
+      "p50": 0.348,
+      "p90": 0.568,
+      "max": 1.0
+    },
+    "top_categories": [
+      [
+        "unknown",
+        754
+      ],
+      [
+        "fish",
+        131
+      ],
+      [
+        "fruit",
+        89
+      ],
+      [
+        "dish",
+        77
+      ],
+      [
+        "herb",
+        57
+      ],
+      [
+        "beverage alcoholic",
+        56
+      ],
+      [
+        "dairy",
+        52
+      ],
+      [
+        "meat",
+        50
+      ],
+      [
+        "essential oil",
+        47
+      ],
+      [
+        "plant",
+        47
+      ],
+      [
+        "berry",
+        43
+      ],
+      [
+        "seafood",
+        39
+      ],
+      [
+        "bakery",
+        38
+      ],
+      [
+        "vegetable",
+        28
+      ],
+      [
+        "additive",
+        27
+      ],
+      [
+        "spice",
+        26
+      ],
+      [
+        "legume",
+        25
+      ],
+      [
+        "plant derivative",
+        23
+      ],
+      [
+        "nut",
+        22
+      ],
+      [
+        "cereal",
+        21
+      ]
+    ],
+    "quality_by_source_coverage": {
+      "2": {
+        "count": 759,
+        "quality_mean": 0.2884,
+        "quality_p90": 0.449,
+        "molecule_p50": 0
+      },
+      "3": {
+        "count": 678,
+        "quality_mean": 0.3545,
+        "quality_p90": 0.48,
+        "molecule_p50": 10
+      },
+      "4": {
+        "count": 250,
+        "quality_mean": 0.5059,
+        "quality_p90": 0.712,
+        "molecule_p50": 37
+      },
+      "5": {
+        "count": 82,
+        "quality_mean": 0.7853,
+        "quality_p90": 0.953,
+        "molecule_p50": 131
+      }
+    }
+  },
+  "kaggle": {
+    "recipes": 39774,
+    "top_cuisines": [
+      [
+        "italian",
+        7838
+      ],
+      [
+        "mexican",
+        6438
+      ],
+      [
+        "southern_us",
+        4320
+      ],
+      [
+        "indian",
+        3003
+      ],
+      [
+        "chinese",
+        2673
+      ],
+      [
+        "french",
+        2646
+      ],
+      [
+        "cajun_creole",
+        1546
+      ],
+      [
+        "thai",
+        1539
+      ],
+      [
+        "japanese",
+        1423
+      ],
+      [
+        "greek",
+        1175
+      ],
+      [
+        "spanish",
+        989
+      ],
+      [
+        "korean",
+        830
+      ],
+      [
+        "vietnamese",
+        825
+      ],
+      [
+        "moroccan",
+        821
+      ],
+      [
+        "british",
+        804
+      ]
+    ],
+    "ingredients_per_recipe": {
+      "p50": 10,
+      "p90": 17,
+      "max": 65,
+      "mean": 10.7677
+    }
+  }
+}

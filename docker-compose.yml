@@ -1,4 +1,14 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: recipes_ollama
+    restart: unless-stopped
+    gpus: all
+    ports:
+      - "127.0.0.1:${OLLAMA_PORT:-11435}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
   postgres:
     image: postgres:17-alpine
     container_name: recipes_postgres
@@ -33,11 +43,28 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-recipes}
       JWT_SECRET: ${JWT_SECRET:-changeme}
       JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS:-24}
-      LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
-      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_API_KEY: ${LLM_API_KEY:-local-not-used}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://ollama:11434/v1}
+      LLM_MODEL: ${LLM_MODEL:-qwen3:8b}
+      LLM_PROMPT_PROFILE_DEFAULT: ${LLM_PROMPT_PROFILE_DEFAULT:-schema_first}
+      LLM_PROMPT_PROFILE_COMPLEX: ${LLM_PROMPT_PROFILE_COMPLEX:-safety_complex_first}
+      LLM_ENABLE_SAFETY_REPAIR: ${LLM_ENABLE_SAFETY_REPAIR:-true}
+      LLM_DISABLE_THINKING_TAG: ${LLM_DISABLE_THINKING_TAG:-true}
+      LLM_MAX_TOKENS: ${LLM_MAX_TOKENS:-1600}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-180}
+      LLM_REPAIR_TIMEOUT_SECONDS: ${LLM_REPAIR_TIMEOUT_SECONDS:-90}
+      LLM_JUDGE_ENABLED: ${LLM_JUDGE_ENABLED:-false}
+      LLM_JUDGE_BASE_URL: ${LLM_JUDGE_BASE_URL:-http://ollama:11434/v1}
+      LLM_JUDGE_API_KEY: ${LLM_JUDGE_API_KEY:-local-not-used}
+      LLM_JUDGE_MODEL: ${LLM_JUDGE_MODEL:-mistral:latest}
+      LLM_JUDGE_TIMEOUT_SECONDS: ${LLM_JUDGE_TIMEOUT_SECONDS:-45}
+      LLM_JUDGE_MAX_TOKENS: ${LLM_JUDGE_MAX_TOKENS:-500}
+      LLM_JUDGE_DISABLE_THINKING_TAG: ${LLM_JUDGE_DISABLE_THINKING_TAG:-true}
+      LLM_JUDGE_MIN_CONFIDENCE: ${LLM_JUDGE_MIN_CONFIDENCE:-0.65}
       ERROR_WEBHOOK_URL: ${ERROR_WEBHOOK_URL:-}
     depends_on:
+      ollama:
+        condition: service_started
       postgres:
         condition: service_healthy
 
@@ -131,3 +158,4 @@ services:
 
 volumes:
   postgres_data:
+  ollama_data:

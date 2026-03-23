@@ -24,6 +24,8 @@ func main() {
 	mux.HandleFunc("GET /recipes/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
 	})
+	mux.HandleFunc("GET /recipes/health/llm", search.HandleLLMHealth)
+	mux.HandleFunc("GET /recipes/metrics/llm", search.HandleLLMMetrics)
 	mux.HandleFunc("GET /recipes/metrics", metrics.Handler)
 
 	mux.HandleFunc("POST /recipes/search", search.HandleSearch)

@@ -211,11 +211,11 @@ On PRs and pushes to `main`, CI runs:
 
 On pushes to `main`, CI also builds backend Docker images.
 
-Deployment planning guide: [`docs/deployment-plan.md`](docs/deployment-plan.md)
-Hosting strategy comparison: [`docs/hosting-strategy.md`](docs/hosting-strategy.md)
+Deployment planning guide: [`docs/ops/deployment-plan.md`](docs/ops/deployment-plan.md)
+Hosting strategy comparison: [`docs/ops/hosting-strategy.md`](docs/ops/hosting-strategy.md)
 Gateway setup: [`server/gateway/README.md`](server/gateway/README.md)
-Provider onboarding checklist: [`docs/provider-onboarding-checklist.md`](docs/provider-onboarding-checklist.md)
-Provider fill-in template: [`docs/provider-setup-template.md`](docs/provider-setup-template.md)
+Provider onboarding checklist: [`docs/ops/provider-onboarding-checklist.md`](docs/ops/provider-onboarding-checklist.md)
+Provider fill-in template: [`docs/ops/provider-setup-template.md`](docs/ops/provider-setup-template.md)
 
 ### Deploy workflow secrets
 
@@ -287,8 +287,8 @@ task web-e2e
 - Backend details: [`server/README.md`](server/README.md)
 - Frontend details: [`web/README.md`](web/README.md)
 - Docs index: [`docs/README.md`](docs/README.md)
-- Deployment checklist: [`docs/deployment-plan.md`](docs/deployment-plan.md)
-- Hosting tradeoffs: [`docs/hosting-strategy.md`](docs/hosting-strategy.md)
+- Deployment checklist: [`docs/ops/deployment-plan.md`](docs/ops/deployment-plan.md)
+- Hosting tradeoffs: [`docs/ops/hosting-strategy.md`](docs/ops/hosting-strategy.md)
 - Gateway setup: [`server/gateway/README.md`](server/gateway/README.md)
-- Provider onboarding: [`docs/provider-onboarding-checklist.md`](docs/provider-onboarding-checklist.md)
-- Provider setup template: [`docs/provider-setup-template.md`](docs/provider-setup-template.md)
+- Provider onboarding: [`docs/ops/provider-onboarding-checklist.md`](docs/ops/provider-onboarding-checklist.md)
+- Provider setup template: [`docs/ops/provider-setup-template.md`](docs/ops/provider-setup-template.md)
