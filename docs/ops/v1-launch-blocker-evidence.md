@@ -23,6 +23,11 @@ Companion tracking files:
   - `RECIPES_ORIGIN=https://recipes-production-b30c.up.railway.app`
   - `USERS_ORIGIN=https://users-production-8fab.up.railway.app`
   - `FAVORITES_ORIGIN=https://favorites-production.up.railway.app`
+- API hostname DNS resolves publicly and gateway health checks pass (`200 OK`) for:
+  - `https://api.ingrediential.uk/recipes/health`
+  - `https://api.ingrediential.uk/users/health`
+  - `https://api.ingrediential.uk/favorites/health`
+- API data-quality smoke report: `docs/ops/v1-api-data-quality-smoke-latest.md` (catalog/search checks passing on 2026-03-23).
 
 ## Web Gates
 
@@ -74,7 +79,7 @@ Companion tracking files:
 
 ## Third-Party Review Inputs
 
-- Security pre-audit: `docs/deliverables/security-pre-audit-report-2026-03-23.md`.
-- Legal/compliance pre-audit: `docs/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`.
+- Security pre-audit: `docs/archive/deliverables/security-pre-audit-report-2026-03-23.md`.
+- Legal/compliance pre-audit: `docs/archive/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`.
 - Security audit brief: `docs/deliverables/third-party-security-audit-brief-v1.md`.
 - Legal review brief: `docs/deliverables/third-party-legal-review-brief-v1.md`.

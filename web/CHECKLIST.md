@@ -1,6 +1,6 @@
-# Web Checklist (V1 Blockers Only)
+# Web Checklist (UX + Launch Quality)
 
-Goal: track only external/manual blockers that cannot be fully completed in-repo.
+Goal: deliver state-of-the-art UX quality while clearing remaining launch gates.
 
 Only active/open blockers are listed here. Completed items are archived in `../docs/archive/checklist-completed-items.md`.
 
@@ -8,6 +8,12 @@ Only active/open blockers are listed here. Completed items are archived in `../d
 
 - [ ] Run post-implementation usability/accessibility sanity pass and fix all P0/P1 web UX defects.
   Model: `CODEX_HIGH`
+- [ ] Create and maintain a "weird issues" triage list from production observations; close P0/P1 regressions weekly.
+  Model: `FREE_BALANCED`
+- [ ] Improve discover/detail perceived quality (loading states, card rhythm, interaction feedback, error recovery).
+  Model: `CODEX_HIGH`
+- [ ] Decide and execute third-party UI/UX review or contracted design pass if in-house quality bar is not met.
+  Model: `FREE_BALANCED`
 
 ## External Validation and Launch Gates
 

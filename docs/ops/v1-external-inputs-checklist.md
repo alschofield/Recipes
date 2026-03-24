@@ -5,7 +5,7 @@ Track non-code values/credentials/approvals needed to close launch blockers.
 ## Identity and Domains
 
 - [x] Final production web domain (`www`): **www.ingrediential.uk**
-- [ ] Final production API domain (`api`): **api.ingrediential.uk (pending Worker route + origin wiring)**
+- [x] Final production API domain (`api`): **api.ingrediential.uk**
 - [x] Domain ownership access confirmed: **ingrediential.uk managed in Cloudflare**
 - [x] API routing strategy selected: **Cloudflare Worker gateway**
 

@@ -1,0 +1,39 @@
+{
+  "runId": "qlora-pilot-001",
+  "generatedAtUtc": "2026-03-24T02:20:00Z",
+  "datasetName": "commercial-sft-json-contract",
+  "datasetVersion": "v1",
+  "totalRecords": 120000,
+  "bundleSha256": "1e0bca42c5e46e2e8829fca68d038e0b3fb0f685b3cb64fd06391a04543eb1c3",
+  "splits": {
+    "train": {
+      "path": "llm/train/datasets/processed/commercial-sft-json-contract.v1.train.jsonl",
+      "count": 83982,
+      "sha256": "96955759c98aa3b3a2433adc02f3af5afe65b8824ee8e0ae2a9615b01bfd9cf7"
+    },
+    "validation": {
+      "path": "llm/train/datasets/processed/commercial-sft-json-contract.v1.validation.jsonl",
+      "count": 18052,
+      "sha256": "b86ad2ac8222ba08d3d844df7642f4bc3cce65adab483cfd9b4bf996a42cae3b"
+    },
+    "test": {
+      "path": "llm/train/datasets/processed/commercial-sft-json-contract.v1.test.jsonl",
+      "count": 17966,
+      "sha256": "b3e63b3f0fba11ef77826a4b88c50cee525a027ee49cfd4dc534583ebf025ff0"
+    }
+  },
+  "commercialEvidence": {
+    "policyDoc": "docs/llm/commercial-data-eligibility-v1.md",
+    "manifest": "llm/train/datasets/provenance-manifest.v1.json",
+    "eligibilityReports": {
+      "train": "llm/train/datasets/reports/commercial-eligibility-sft-train.v1.json",
+      "validation": "llm/train/datasets/reports/commercial-eligibility-sft-validation.v1.json",
+      "test": "llm/train/datasets/reports/commercial-eligibility-sft-test.v1.json"
+    },
+    "safetyReports": {
+      "train": "llm/train/datasets/reports/commercial-sft-safety-train.v1.json",
+      "validation": "llm/train/datasets/reports/commercial-sft-safety-validation.v1.json",
+      "test": "llm/train/datasets/reports/commercial-sft-safety-test.v1.json"
+    }
+  }
+}

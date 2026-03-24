@@ -13,4 +13,9 @@ Current scaffold status:
 
 Planning and policy docs live in `../docs/mobile/`.
 
+Live endpoints used by mobile apps:
+
+- API base URL: `https://api.ingrediential.uk`
+- Public web URL: `https://www.ingrediential.uk`
+
 Use this folder for native project files, platform-specific CI lanes, and mobile release artifacts.

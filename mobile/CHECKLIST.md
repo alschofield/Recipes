@@ -1,6 +1,6 @@
-# Mobile App Roadmap (V1 Blockers Only)
+# Mobile App Roadmap (UX + Launch Quality)
 
-Goal: track only external/manual blockers that cannot be fully completed from repo-only automation.
+Goal: ship polished native UX and clear remaining store/manual launch gates.
 
 Only active/open blockers are listed here. Completed items should be moved to `../docs/archive/checklist-completed-items.md`.
 
@@ -8,6 +8,12 @@ Only active/open blockers are listed here. Completed items should be moved to `.
 
 - [ ] Run post-implementation UX sanity pass and fix all P0/P1 mobile UX defects before store submission.
   Model: `CODEX_HIGH`
+- [ ] Build and maintain a mobile "weird issues" triage board (navigation, state sync, queue edge cases, auth/session friction) and close P0/P1 first.
+  Model: `FREE_BALANCED`
+- [ ] Improve native interaction polish (visual hierarchy, spacing consistency, loading/empty/error transitions, voice state feedback).
+  Model: `CODEX_HIGH`
+- [ ] Decide and execute third-party mobile UI/UX design audit if quality bar is not consistently met in manual QA.
+  Model: `FREE_BALANCED`
 
 ## Manual Device Validation Gates
 
@@ -22,7 +28,7 @@ Only active/open blockers are listed here. Completed items should be moved to `.
 
 ## Store and Compliance Gates
 
-- [ ] Finalize Play Store and App Store asset packs/screenshots and fill remaining owner-provided fields in `docs/mobile/store-submission-pack-rc0-2026-03-23.md`.
+- [ ] Finalize Play Store and App Store asset packs/screenshots and fill remaining owner-provided fields in `docs/mobile/store-submission-pack-template-v1.md`.
   Model: `FREE_FAST`
 - [ ] Complete privacy/data safety declarations for mobile voice usage and validate policy URLs in both store consoles.
   Model: `CODEX_HIGH`

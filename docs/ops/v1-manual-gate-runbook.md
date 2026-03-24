@@ -78,7 +78,7 @@ Record:
 
 ## 5) Store and Compliance Gates
 
-- finish all TODO fields in `docs/mobile/store-submission-pack-rc0-2026-03-23.md`
+- fill and finalize release copy from `docs/mobile/store-submission-pack-template-v1.md` (keep dated working copy in archive if needed)
 - complete Play/App Store privacy declarations
 - run Play closed track + TestFlight cycles
 

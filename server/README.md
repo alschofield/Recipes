@@ -19,7 +19,7 @@ This folder contains three Go HTTP services and supporting backend assets.
 - `../datasets/derived/server-lib/` - generated consolidated seed artifacts (`canonical_ingredient_seed_v1.*`)
 - `etc/nginx/` - nginx local/prod routing config
 - `gateway/cloudflare-worker/` - single-domain API gateway option for split hosting
-- `scripts/db/` - backup/restore helper scripts
+- `../scripts/db/` - remote migration and seed verification operator scripts
 - `Dockerfile.*` - per-service container builds
 
 ## Run from repo root
@@ -87,6 +87,21 @@ task seed
 task db-counts
 ```
 
+Remote operator helpers from repo root:
+
+```bash
+export DATABASE_URL="postgresql://user:pass@host/db?sslmode=require&channel_binding=require"
+bash scripts/db/apply_remote_migrations.sh
+python scripts/db/smoke_api_data_quality.py --base-url "https://api.ingrediential.uk"
+```
+
+```powershell
+$env:DATABASE_URL = "postgresql://user:pass@host/db?sslmode=require&channel_binding=require"
+powershell -ExecutionPolicy Bypass -File .\scripts\db\apply_remote_migrations.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\db\verify_remote_seed.ps1
+python .\scripts\db\smoke_api_data_quality.py --base-url "https://api.ingrediential.uk"
+```
+
 ## Environment variables
 
 See `server/.env.example` for full list.
@@ -115,6 +130,20 @@ Most important:
 - Set strong, non-default values for `JWT_SECRET` in staging/prod.
 - Lock `CORS_ALLOWED_ORIGINS` to deployed web origins.
 - Keep migrations in release flow before service rollout.
+
+## Production endpoint map
+
+- Public API gateway: `https://api.ingrediential.uk`
+- Gateway health:
+  - `https://api.ingrediential.uk/recipes/health`
+  - `https://api.ingrediential.uk/users/health`
+  - `https://api.ingrediential.uk/favorites/health`
+
+Current upstream service URLs (behind gateway):
+
+- Recipes: `https://recipes-production-b30c.up.railway.app`
+- Users: `https://users-production-8fab.up.railway.app`
+- Favorites: `https://favorites-production.up.railway.app`
 
 ## Operational docs
 

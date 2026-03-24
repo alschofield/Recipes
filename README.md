@@ -6,11 +6,13 @@ This repository is organized as a monorepo so backend services, web app, docs, a
 ## Table of contents
 
 - [Monorepo map](#monorepo-map)
+- [Current priorities](#current-priorities)
 - [Prerequisites](#prerequisites)
 - [Global tooling setup](#global-tooling-setup)
 - [Quick start](#quick-start)
 - [Root command runners](#root-command-runners)
 - [Environment variables](#environment-variables)
+- [Production URLs](#production-urls)
 - [CI/CD at a glance](#cicd-at-a-glance)
 - [Public GitHub metadata](#public-github-metadata)
 - [GitHub collaboration files](#github-collaboration-files)
@@ -35,6 +37,14 @@ Other root files:
 - `Makefile` - root command runner for make users
 - `Taskfile.yml` - root command runner for Task users
 - `.gitignore` - monorepo-wide ignore rules for generated assets/secrets
+
+---
+
+## Current priorities
+
+- Data curation quality: improve seed data integrity for production DB and LLM training/eval corpora.
+- Product UX quality: remove weird UI/interaction issues and raise web/mobile polish to launch-grade quality.
+- External specialist readiness: maintain share-ready audit briefs for security, legal/compliance, UI/UX, and data curation support.
 
 ---
 
@@ -192,6 +202,27 @@ Common web values:
 - `NEXT_PUBLIC_API_RECIPES_PORT`
 - `NEXT_PUBLIC_API_USERS_PORT`
 - `NEXT_PUBLIC_API_FAVORITES_PORT`
+
+---
+
+## Production URLs
+
+Canonical public endpoints:
+
+- Web app: `https://www.ingrediential.uk`
+- API gateway: `https://api.ingrediential.uk`
+
+Gateway health endpoints:
+
+- `https://api.ingrediential.uk/recipes/health`
+- `https://api.ingrediential.uk/users/health`
+- `https://api.ingrediential.uk/favorites/health`
+
+Current upstream service origins behind the gateway:
+
+- Recipes service: `https://recipes-production-b30c.up.railway.app`
+- Users service: `https://users-production-8fab.up.railway.app`
+- Favorites service: `https://favorites-production.up.railway.app`
 
 ---
 

@@ -14,7 +14,7 @@ Status: internal pre-audit. Not legal advice.
 - Review of active legal/compliance blockers in `llm/CHECKLIST.md`.
 - Review of store/privacy policy docs:
   - `docs/mobile/voice-privacy-policy-v1.md`
-  - `docs/mobile/store-submission-pack-rc0-2026-03-23.md`
+  - `docs/mobile/store-submission-pack-template-v1.md`
   - `docs/ops/v1-external-inputs-checklist.md`
 
 ## Findings Summary
@@ -36,7 +36,7 @@ Status: internal pre-audit. Not legal advice.
 
 ## Priority Remediation
 
-1. Finalize policy URLs and owner-provided legal/store fields in `docs/mobile/store-submission-pack-rc0-2026-03-23.md`.
+1. Finalize policy URLs and owner-provided legal/store fields in `docs/mobile/store-submission-pack-template-v1.md`.
 2. Obtain legal review for LLM dataset lanes and close blocked items in `llm/CHECKLIST.md`.
 3. Produce a release-ready attribution bundle for all distributed components before public launch.
 
@@ -50,6 +50,6 @@ Status: internal pre-audit. Not legal advice.
 ## Evidence References
 
 - `llm/CHECKLIST.md`
-- `docs/mobile/store-submission-pack-rc0-2026-03-23.md`
+- `docs/mobile/store-submission-pack-template-v1.md`
 - `docs/mobile/voice-privacy-policy-v1.md`
 - `docs/ops/v1-external-inputs-checklist.md`

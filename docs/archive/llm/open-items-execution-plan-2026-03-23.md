@@ -8,7 +8,7 @@ This plan covers the remaining active items in `llm/CHECKLIST.md` with execution
    - Inputs ready:
      - `llm/train/datasets/provenance-manifest.v1.json`
      - `llm/train/datasets/source-denylist.txt`
-     - `docs/llm/model-validation-report-2026-03-23.md`
+     - `docs/archive/llm/model-validation-report-2026-03-23.md`
    - Remaining action: legal approver decision for unresolved third-party lane entries.
    - Blocker type: external approval.
 

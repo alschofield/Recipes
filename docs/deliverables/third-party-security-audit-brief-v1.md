@@ -42,7 +42,7 @@ Perform an independent security assessment before V1 launch for server/web/mobil
 
 ## Artifacts to Share
 
-- `docs/deliverables/security-pre-audit-report-2026-03-23.md`
+- `docs/archive/deliverables/security-pre-audit-report-2026-03-23.md`
 - `docs/ops/v1-launch-blocker-evidence.md`
 - `docs/ops/v1-local-preflight-latest.md`
 - `docs/ops/v1-runtime-smoke-latest.md`

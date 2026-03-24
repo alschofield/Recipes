@@ -87,6 +87,12 @@ Production wiring check:
 node web/scripts/verify-env-wiring.mjs web/.env.production.example
 ```
 
+## Production URLs
+
+- Canonical site: `https://www.ingrediential.uk`
+- Apex redirect: `https://ingrediential.uk` -> `https://www.ingrediential.uk`
+- API base URL used by web: `https://api.ingrediential.uk`
+
 ## Notes
 
 - `pnpm --dir web test` is configured with `--passWithNoTests` for clean CI behavior when no unit tests are present.

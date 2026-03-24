@@ -1,6 +1,6 @@
 {
   "version": "v1",
-  "updatedAt": "2026-03-23",
+  "updatedAt": "2026-03-24",
   "records": [
     {
       "id": "canonical-seed-v1",
@@ -39,6 +39,63 @@
       "approvedForProductionInference": false,
       "approvedBy": "pending",
       "approvalDateUtc": ""
+    },
+    {
+      "id": "culinarydb-aliases",
+      "lane": "recipes",
+      "sourceName": "CulinaryDB recipe alias lane",
+      "sourceUrl": "datasets/raw/server-lib/CulinaryDB.zip::01_Recipe_Details.csv+04_Recipe-Ingredients_Aliases.csv",
+      "originType": "third-party-public",
+      "retrievedDateUtc": "2026-03-24",
+      "licenseType": "review-required",
+      "commercialUseAllowed": false,
+      "derivativeWorksAllowed": false,
+      "attributionRequired": true,
+      "shareAlikeRequired": false,
+      "legalReviewReference": "pending-legal-culinarydb-aliases",
+      "approvedForEval": true,
+      "approvedForFineTune": false,
+      "approvedForProductionInference": false,
+      "approvedBy": "pending",
+      "approvalDateUtc": ""
+    },
+    {
+      "id": "world-recipes-csv",
+      "lane": "recipes",
+      "sourceName": "Recipes from around the world CSV",
+      "sourceUrl": "datasets/raw/server-lib/collection of recipes dataset from kaggle.zip::Receipes from around the world.csv",
+      "originType": "third-party-public",
+      "retrievedDateUtc": "2026-03-24",
+      "licenseType": "review-required",
+      "commercialUseAllowed": false,
+      "derivativeWorksAllowed": false,
+      "attributionRequired": true,
+      "shareAlikeRequired": false,
+      "legalReviewReference": "pending-legal-world-recipes-csv",
+      "approvedForEval": true,
+      "approvedForFineTune": false,
+      "approvedForProductionInference": false,
+      "approvedBy": "pending",
+      "approvalDateUtc": ""
+    },
+    {
+      "id": "internal-synthetic-query-v1",
+      "lane": "recipes",
+      "sourceName": "Internal synthetic recipe-query corpus from canonical seed",
+      "sourceUrl": "datasets/derived/server-lib/canonical_ingredient_seed_v1.csv::llm/train/datasets/curate_commercial_recipe_query_corpus.py",
+      "originType": "first-party-derived",
+      "retrievedDateUtc": "2026-03-24",
+      "licenseType": "internal",
+      "commercialUseAllowed": true,
+      "derivativeWorksAllowed": true,
+      "attributionRequired": false,
+      "shareAlikeRequired": false,
+      "legalReviewReference": "internal-review-commercial-synthetic-v1",
+      "approvedForEval": true,
+      "approvedForFineTune": true,
+      "approvedForProductionInference": true,
+      "approvedBy": "platform-team",
+      "approvalDateUtc": "2026-03-24"
     }
   ]
 }

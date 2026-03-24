@@ -30,8 +30,8 @@ Reduce launch risk for privacy, licensing, and store compliance before V1 releas
 
 ## Artifacts to Share
 
-- `docs/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
-- `docs/mobile/store-submission-pack-rc0-2026-03-23.md`
+- `docs/archive/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
+- `docs/mobile/store-submission-pack-template-v1.md`
 - `docs/mobile/voice-privacy-policy-v1.md`
 - `llm/CHECKLIST.md`
 - `docs/ops/v1-external-inputs-checklist.md`

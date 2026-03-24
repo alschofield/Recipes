@@ -18,6 +18,7 @@ This folder tracks the first fine-tuning pilot for `qwen3:8b` focused on:
 - `pilot-plan.md`: gates, dataset contract, and run flow
 - `training-record-template.json`: fill one record per run
 - `create_training_record.py`: helper to assemble a filled run record from eval artifacts
+- `train_qlora.py`: non-interactive QLoRA training entrypoint for commercial SFT splits
 
 ## Create a run record
 
@@ -49,3 +50,19 @@ python llm/train/qlora/create_training_record.py \
 1. Trained adapter artifact + metadata
 2. Eval output under `llm/evals/results/` using the same case files
 3. Decision note: promote, iterate, or rollback
+
+## Overnight launch (inside trainer container)
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install "transformers>=4.45" "trl>=0.12" "peft>=0.12" "accelerate>=0.34" "bitsandbytes>=0.43" sentencepiece
+
+nohup python llm/train/qlora/train_qlora.py \
+  --model-name "Qwen/Qwen2.5-7B-Instruct" \
+  --output-dir "llm/train/qlora/artifacts/qlora-pilot-001" \
+  --max-seq-length 2048 \
+  --batch-size 1 \
+  --grad-accum 16 \
+  --epochs 2 \
+  > llm/train/qlora/logs/qlora-pilot-001.train.log 2>&1 &
+```

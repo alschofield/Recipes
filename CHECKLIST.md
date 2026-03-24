@@ -1,6 +1,6 @@
-# Recipes Project Checklist (V1 Blockers Only)
+# Recipes Project Checklist (Current Priorities)
 
-Only external/manual blockers are listed here.
+This checklist now tracks the active next-phase priorities after first public deployment.
 Archive location for completed groups/items: `docs/archive/`.
 
 ## Model Selection Policy (Cost-First)
@@ -16,7 +16,37 @@ Escalation rule: if a task fails twice on current tier, move up one tier.
 
 ---
 
-## Release Readiness for Option B (Split Providers)
+## Priority A: Dataset Curation (DB Seeding + LLM Training)
+
+- [ ] Define V1 seed dataset acceptance criteria (minimum record counts, required fields, quality thresholds, duplicate policy) and publish in docs.
+  Model: `FREE_BALANCED`
+- [ ] Run staging/prod data profiling and fix schema/data issues affecting `/recipes/catalog` and search quality.
+  Model: `CODEX_HIGH`
+- [ ] Build repeatable seed refresh workflow with verification report (counts, null/duplicate checks, source distribution) and operator runbook.
+  Model: `CODEX_HIGH`
+- [ ] Curate LLM training/eval datasets from approved lanes with provenance and dedup checks.
+  Model: `CODEX_HIGH`
+- [ ] Define and implement schema V2 for ingredient measurements (`amount` compatibility + structured `quantity`/`unit`/`prep`) across contract, eval harness, and dataset generators.
+  Model: `CODEX_HIGH`
+- [ ] Execute first QLoRA pilot cycle in provisioned training environment and document promote/iterate/rollback decision.
+  Model: `CODEX_HIGH`
+
+---
+
+## Priority B: Product UI/UX Quality (Web + Mobile)
+
+- [ ] Close all known "weird" UX issues via structured triage log and P0/P1 fix pass on web and mobile.
+  Model: `CODEX_HIGH`
+- [ ] Ship V1.1 visual polish pass for web discover/detail/auth flows (hierarchy, motion restraint, readability, empty/error clarity).
+  Model: `CODEX_HIGH`
+- [ ] Ship V1.1 visual polish pass for mobile Discover/Saved/Profile flows (spacing, typography, status clarity, action ergonomics).
+  Model: `CODEX_HIGH`
+- [ ] Prepare third-party design/UX audit packet and decide whether to contract specialist support before broader launch.
+  Model: `FREE_BALANCED`
+
+---
+
+## Priority C: Release Readiness for Option B (Split Providers)
 
 - [ ] Fill `docs/ops/v1-launch-blocker-evidence.md` with latest server/web/mobile gate evidence before final go/no-go.
   Model: `FREE_FAST`
@@ -35,16 +65,9 @@ Escalation rule: if a task fails twice on current tier, move up one tier.
 
 ---
 
-## LLM Program Direction
-
-- [ ] Execute first QLoRA pilot cycle in provisioned training environment and document promote/iterate/rollback decision.
-  Model: `CODEX_HIGH`
-
----
-
 ## Suggested Next Work Order
 
-- 1) Run `python scripts/v1_preflight.py` and attach `docs/ops/v1-local-preflight-latest.md` to release evidence.
-- 2) Clear `server/CHECKLIST.md` blocker gates (staging/prod drill + ops approval).
-- 3) Clear `web/CHECKLIST.md` and `mobile/CHECKLIST.md` manual/deployed gates using `docs/ops/v1-manual-gate-runbook.md`.
-- 4) Clear remaining `llm/CHECKLIST.md` external blocker gates.
+- 1) Stabilize deployed data layer (migrations + seed quality + catalog/search integrity).
+- 2) Run structured web/mobile UX triage and close P0/P1 polish issues.
+- 3) Continue LLM data curation + first QLoRA pilot evidence.
+- 4) Clear remaining external launch gates in server/web/mobile/llm checklists.

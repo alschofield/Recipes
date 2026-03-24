@@ -34,7 +34,7 @@ Close as many external/manual gates as possible in one pass and update `v1-launc
    - Run `docs/mobile/v1-mobile-ux-sanity-sheet.md`
 
 5. **Store/compliance sweep**
-   - Complete `docs/mobile/store-submission-pack-rc0-2026-03-23.md`
+   - Complete `docs/mobile/store-submission-pack-template-v1.md` (archive dated working copy when finalized)
    - Confirm policy URLs and declarations in store consoles
 
 6. **Final gate review**
@@ -53,8 +53,10 @@ Close as many external/manual gates as possible in one pass and update `v1-launc
 
 If specialized security/legal expertise is needed, share:
 
-- `../deliverables/security-pre-audit-report-2026-03-23.md`
-- `../deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
+- `../archive/deliverables/security-pre-audit-report-2026-03-23.md`
+- `../archive/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
 - `../deliverables/third-party-security-audit-brief-v1.md`
 - `../deliverables/third-party-legal-review-brief-v1.md`
 - `../deliverables/third-party-audit-options-v1.md`
+- `../deliverables/third-party-design-ux-brief-v1.md`
+- `../deliverables/third-party-data-curation-brief-v1.md`

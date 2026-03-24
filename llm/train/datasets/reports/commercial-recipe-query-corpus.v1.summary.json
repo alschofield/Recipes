@@ -1,0 +1,39 @@
+{
+  "generatedAtUtc": "2026-03-24T01:52:39Z",
+  "seedCsv": "datasets\\derived\\server-lib\\canonical_ingredient_seed_v1.csv",
+  "outputPath": "llm\\train\\datasets\\raw\\commercial-recipe-query-corpus.v1.jsonl",
+  "outputRecords": 120000,
+  "minQualityScore": 0.75,
+  "generationSeed": 20260324,
+  "splitCounts": {
+    "test": 17966,
+    "train": 83982,
+    "validation": 18052
+  },
+  "cuisineCounts": {
+    "mediterranean": 11853,
+    "indian": 12066,
+    "unspecified": 11985,
+    "nordic": 12060,
+    "asian": 12143,
+    "caribbean": 12075,
+    "middle eastern": 11960,
+    "british": 12017,
+    "latin": 11905,
+    "african": 11936
+  },
+  "ingredientCountHistogram": {
+    "8": 20918,
+    "6": 21159,
+    "5": 20932,
+    "7": 21180,
+    "4": 20594,
+    "3": 15217
+  },
+  "sourceLane": "internal-synthetic-query-v1",
+  "commercialPolicy": {
+    "commercialUseAllowed": true,
+    "approvedForFineTune": true,
+    "thirdPartyRecipeTextIncluded": false
+  }
+}

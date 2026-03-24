@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "recordCount": 5,
+  "errors": [],
+  "warnings": [
+    "records[1] license requires explicit legal decision (review-required)",
+    "records[2] license requires explicit legal decision (review-required)",
+    "records[3] license requires explicit legal decision (review-required)"
+  ],
+  "blockedRecords": []
+}

@@ -50,7 +50,7 @@ Current behavior:
 
 ## Next implementation slice
 
-- Accessibility implementation baseline is now in place (headings/sensitive-input handling/status messaging) and tracked in `native-accessibility-pass-2026-03-23.md`.
+- Accessibility implementation baseline is now in place (headings/sensitive-input handling/status messaging) and tracked in `../mobile/native-accessibility-pass-2026-03-23.md`.
 - Execute manual TalkBack/VoiceOver device pass using `native-accessibility-manual-test-sheet-v1.md` and complete contrast/text-scaling validation.
 - Execute store-readiness artifacts/testing cycles from `mobile/CHECKLIST.md`.
 - Validate and harden Voice I/O V1 on real devices (`voice-io-plan-v1-v2.md`, `voice-privacy-policy-v1.md`).

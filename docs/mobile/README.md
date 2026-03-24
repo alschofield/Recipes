@@ -11,10 +11,7 @@ Planning and contract references for native mobile rollout.
 - `release-engineering-v1.md` - package IDs, signing/key policy, CI lanes, versioning.
 - `store-readiness-v1.md` - Play/App Store submission readiness requirements.
 - `store-submission-pack-template-v1.md` - release-candidate template for Play + App Store metadata/assets/policy checks.
-- `store-submission-pack-rc0-2026-03-23.md` - first pre-filled RC draft from current scaffold metadata.
 - `qa-operations-v1.md` - QA matrix, reliability thresholds, rollout/triage cadence.
-- `native-scaffold-status-2026-03-23.md` - current native scaffold status and next implementation slice.
-- `native-accessibility-pass-2026-03-23.md` - accessibility implementation baseline and manual validation checklist.
 - `native-accessibility-manual-test-sheet-v1.md` - release-candidate manual test sheet for TalkBack/VoiceOver checks.
 - `v1-mobile-ux-sanity-sheet.md` - pre-launch native UX sanity checklist and defect log.
 - `voice-io-plan-v1-v2.md` - phased STT/TTS roadmap and constraints.
@@ -24,4 +21,10 @@ Planning and contract references for native mobile rollout.
 Related checklists:
 
 - `../../mobile/CHECKLIST.md`
+
+Archived dated snapshots:
+
+- `../archive/mobile/native-scaffold-status-2026-03-23.md`
+- `../archive/mobile/native-accessibility-pass-2026-03-23.md`
+- `../archive/mobile/store-submission-pack-rc0-2026-03-23.md`
 - `../../server/CHECKLIST.md`

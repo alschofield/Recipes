@@ -2,6 +2,12 @@
 
 This folder has contracts, rollout plans, and LLM ops notes. Keep contracts tight and avoid duplicating rules across multiple files.
 
+## Current Priority Themes
+
+- Dataset curation quality for DB seeding and LLM training/eval.
+- UI/UX quality uplift across web and native mobile.
+- External security/legal/design review readiness packs.
+
 ## Start Here (Source of Truth)
 
 - `server/search-contract.md` - request/response behavior for recipe search.
@@ -51,11 +57,13 @@ This folder has contracts, rollout plans, and LLM ops notes. Keep contracts tigh
 
 ## Shareable Deliverables
 
-- `deliverables/security-pre-audit-report-2026-03-23.md`
-- `deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
+- `archive/deliverables/security-pre-audit-report-2026-03-23.md`
+- `archive/deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
 - `deliverables/third-party-security-audit-brief-v1.md`
 - `deliverables/third-party-legal-review-brief-v1.md`
 - `deliverables/third-party-audit-options-v1.md`
+- `deliverables/third-party-design-ux-brief-v1.md`
+- `deliverables/third-party-data-curation-brief-v1.md`
 
 ## Templates
 

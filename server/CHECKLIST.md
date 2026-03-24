@@ -1,8 +1,17 @@
-# Server Checklist (V1 Blockers Only)
+# Server Checklist (Deployment + Data Quality)
 
-Goal: track only external/manual blockers that cannot be fully completed in local repo automation.
+Goal: keep deployed API reliable while improving seed/training data quality.
 
 Only active/open blockers are listed here. Completed items are archived in `../docs/archive/checklist-completed-items.md`.
+
+## Dataset and Seeding Quality Gates
+
+- [ ] Validate production/staging seed integrity (recipes/ingredients counts, required fields, source distribution, duplicate checks).
+  Model: `CODEX_HIGH`
+- [x] Add a repeatable remote migration + seed operator flow (with verification queries) for Neon-backed environments.
+  Model: `FREE_BALANCED`
+- [x] Add API-level data quality smoke checks for `/recipes/catalog` and `/recipes/search` to detect schema/seed regressions early.
+  Model: `CODEX_HIGH`
 
 ## Environment and Deployment Gates
 

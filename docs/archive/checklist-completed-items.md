@@ -146,6 +146,12 @@ Archived on 2026-03-23.
 - Configured CI/browser perf audit lane via `.github/workflows/web-perf-audit.yml` and `web/.lighthouserc.json`.
 - Finalized production web domain routing (`ingrediential.uk` -> `www.ingrediential.uk`) and validated DNS/TLS baseline for web host.
 
+## Source: `docs/ops/v1-external-inputs-checklist.md`
+
+### Identity and Domains
+
+- Finalized production API domain routing at `api.ingrediential.uk` with Cloudflare Worker gateway upstreams active.
+
 ## Source: `CHECKLIST.md`
 
 ### Deferred Fixes (Broken but Not Blocking)
@@ -155,6 +161,10 @@ Archived on 2026-03-23.
 ### LLM Program Direction
 
 - Removed duplicate root-level judge-model workflow item because the implementation lane was already completed and archived under prior server/LLM completed groups.
+
+### Doc Hygiene
+
+- Moved dated point-in-time docs from active folders into `docs/archive/{mobile,product,llm,deliverables}/` to keep active indexes focused on evergreen guidance.
 
 ## Source: `mobile/CHECKLIST.md`
 

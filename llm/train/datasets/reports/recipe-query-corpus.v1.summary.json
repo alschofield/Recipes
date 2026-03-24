@@ -1,0 +1,132 @@
+{
+  "generatedAtUtc": "2026-03-24T01:45:54Z",
+  "inputs": {
+    "kaggle-train-json": 39774,
+    "culinarydb-aliases": 45749,
+    "world-recipes-csv": 161
+  },
+  "keptBySource": {
+    "kaggle-train-json": 39018,
+    "culinarydb-aliases": 43973,
+    "world-recipes-csv": 156
+  },
+  "dropped": {
+    "too_few_ingredients": 1309,
+    "too_many_ingredients": 58,
+    "dedup_signature": 1170
+  },
+  "outputPath": "llm\\train\\datasets\\raw\\recipe-query-corpus.v1.jsonl",
+  "outputRecords": 83147,
+  "splitCounts": {
+    "train": 58264,
+    "test": 12373,
+    "validation": 12510
+  },
+  "topCuisines": [
+    [
+      "usa",
+      15503
+    ],
+    [
+      "italian",
+      7728
+    ],
+    [
+      "italy",
+      7253
+    ],
+    [
+      "mexican",
+      6349
+    ],
+    [
+      "southern us",
+      4211
+    ],
+    [
+      "indian subcontinent",
+      3669
+    ],
+    [
+      "mexico",
+      3038
+    ],
+    [
+      "indian",
+      2961
+    ],
+    [
+      "chinese",
+      2633
+    ],
+    [
+      "french",
+      2582
+    ],
+    [
+      "france",
+      2564
+    ],
+    [
+      "thai",
+      1519
+    ],
+    [
+      "cajun creole",
+      1517
+    ],
+    [
+      "japanese",
+      1381
+    ],
+    [
+      "greek",
+      1164
+    ],
+    [
+      "canada",
+      1082
+    ],
+    [
+      "caribbean",
+      1067
+    ],
+    [
+      "british isles",
+      1027
+    ],
+    [
+      "middle east",
+      985
+    ],
+    [
+      "spanish",
+      976
+    ],
+    [
+      "china",
+      925
+    ],
+    [
+      "greece",
+      924
+    ],
+    [
+      "korean",
+      820
+    ],
+    [
+      "moroccan",
+      812
+    ],
+    [
+      "vietnamese",
+      801
+    ]
+  ],
+  "filters": {
+    "minIngredients": 3,
+    "maxIngredients": 30,
+    "maxPerSource": 0
+  }
+}

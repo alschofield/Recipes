@@ -1,0 +1,40 @@
+{
+  "runId": "qlora-pilot-001",
+  "date": "2026-03-24",
+  "baseModel": "Qwen3-8B",
+  "adapterType": "qlora",
+  "dataset": {
+    "name": "commercial-sft-json-contract",
+    "version": "v1",
+    "trainCount": 83982,
+    "valCount": 18052,
+    "testCount": 17966,
+    "datasetHash": "sha256:1e0bca42c5e46e2e8829fca68d038e0b3fb0f685b3cb64fd06391a04543eb1c3"
+  },
+  "hyperparameters": {
+    "loraRank": 16,
+    "loraAlpha": 32,
+    "loraDropout": 0.05,
+    "sequenceLength": 4096,
+    "learningRate": 0.0002,
+    "epochs": 2,
+    "effectiveBatchSize": 16
+  },
+  "artifacts": {
+    "adapterPath": "llm/train/qlora/artifacts/qlora-pilot-001",
+    "logsPath": "llm/train/qlora/logs/qlora-pilot-001",
+    "evalOutputPath": "llm/evals/results/qlora-pilot-001"
+  },
+  "metrics": {
+    "schemaPassRatePercent": 0,
+    "safetyPassRatePercent": 0,
+    "complexPassRatePercent": 0,
+    "p95LatencyMs": 0,
+    "timeoutRatePercent": 0
+  },
+  "decision": {
+    "outcome": "iterate",
+    "notes": "Prefilled before training/eval. Replace metrics and final decision after pilot run."
+  },
+  "datasetBundlePath": "llm/train/qlora/runs/qlora-pilot-001.dataset-bundle.json"
+}
