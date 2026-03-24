@@ -1,0 +1,20 @@
+{
+  "version": "v1",
+  "updatedAt": "2026-03-23",
+  "ingredientMetadata": {
+    "schemaPassRatePercentMin": 95,
+    "minConfidencePassSharePercent": 70,
+    "manualAgreementPercentMin": 85
+  },
+  "recipeQuality": {
+    "schemaPassRatePercentMin": 95,
+    "minConfidencePassSharePercent": 70,
+    "manualAgreementPercentMin": 80,
+    "deterministicDeviationP50Max": 0.15
+  },
+  "decisionPolicy": {
+    "promote": "All thresholds pass",
+    "iterate": "Any single threshold miss",
+    "rollback": "Schema pass < 90 or manual agreement < 70"
+  }
+}

@@ -22,8 +22,14 @@ This project currently uses a curated, commit-based changelog (no tagged release
 
 - Some historical commits use non-standard messages (for example link-only/day-log entries: `4365088`, `21edb0b`, `f4a0595`) and are not expanded into product-level changelog bullets.
 
-To refresh this section:
+To refresh this section quickly:
 
 ```bash
 git log --no-merges --date=short --pretty=format:"- %ad `%h` %s" -n 25
+```
+
+Or generate a grouped draft:
+
+```bash
+python scripts/changelog_draft.py --max 30 --out docs/changelog-draft.md
 ```

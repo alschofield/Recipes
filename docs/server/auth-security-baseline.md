@@ -5,7 +5,7 @@ Status: v1 locked baseline (update via checklist preflight item)
 ## Authentication Strategy
 
 - Access token: short-lived JWT (default 15 minutes, configurable via env).
-- Refresh token: deferred for later milestone (current implementation is access-token only).
+- Refresh token: rotating refresh-token flow enabled (`/users/refresh`) with session revoke (`/users/logout/session`) and family revoke support (`/users/logout`).
 - Password hashing: bcrypt with strong cost.
 - Password minimums: length >= 12, block common weak patterns.
 
@@ -34,7 +34,8 @@ Status: v1 locked baseline (update via checklist preflight item)
 
 - Revoke refresh token on logout.
 - Rotate refresh token each use; store token family ID server-side.
-- Invalidate all sessions on password change.
+- Invalidate all sessions on password change (remaining hardening task).
+- Mobile clients should provide stable `X-Client-Session-ID` to scope device/session revocation.
 
 ## API Error Contract
 

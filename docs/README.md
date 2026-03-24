@@ -7,7 +7,7 @@ This folder has contracts, rollout plans, and LLM ops notes. Keep contracts tigh
 - `server/search-contract.md` - request/response behavior for recipe search.
 - `server/auth-security-baseline.md` - authn/authz and baseline security controls.
 - `llm/fallback-contract.md` - DB-first + LLM fallback rules, schema, health/metrics endpoint.
-- Folder indexes: `server/README.md`, `ops/README.md`, `product/README.md`, `llm/README.md`, `archive/README.md`.
+- Folder indexes: `server/README.md`, `ops/README.md`, `product/README.md`, `llm/README.md`, `mobile/README.md`, `deliverables/README.md`, `archive/README.md`.
 
 ## LLM Runbook Set
 
@@ -27,15 +27,35 @@ This folder has contracts, rollout plans, and LLM ops notes. Keep contracts tigh
 - `ops/provider-setup-template.md` - private env/provider setup template.
 - `ops/provider-onboarding-checklist.md` - provider setup validation checklist.
 - `ops/hosting-strategy.md` - deployment and host tradeoff notes.
-- `ops/session-handoff-2026-03-23.md` - preserved progress snapshot and next actions.
+- `ops/v1-launch-blocker-evidence.md` - final evidence capture for launch blocker gates.
+- `ops/v1-manual-gate-runbook.md` - manual execution guide for remaining launch gates.
+- `ops/v1-server-web-smoke-command-pack.md` - deployed smoke command templates for server/web gates.
+- `ops/v1-local-preflight-latest.md` - latest generated local preflight report.
+- `ops/v1-open-gates-snapshot.md` - latest generated consolidated open-gates snapshot.
+- `ops/v1-external-inputs-checklist.md` - required external inputs and approvals.
+- `ops/v1-runtime-smoke-latest.md` - latest generated local runtime smoke report.
+- `ops/v1-gate-dashboard-latest.md` - compact generated gate dashboard for quick visibility.
+- `ops/v1-human-execution-session.md` - live operator session flow for manual/external gates.
+- `ops/api-gateway-cutover-ingrediential.md` - Cloudflare Worker gateway cutover checklist for `api.ingrediential.uk`.
 
 ## Product and Domain Reference
 
 - `server/architecture.md` - service map and repository structure.
 - `server/ingredient-governance.md` - ingredient normalization/governance process.
 - `product/domain-language.md` - shared domain terminology.
+- `product/v1-brand-copy-system.md` - Ingrediential V1 naming/tone/copy baseline.
+- `product/v1-web-usability-sanity-sheet.md` - web UX sanity checklist and defect log template.
 - `product/ad-monetization-policy.md` - native ad guardrails and disclosure policy.
 - `product/design-modernization-v1.md` - UI modernization direction notes.
+- `mobile/api-usage-policy-v1.md` - native API usage, retry/cache/offline/session policy.
+
+## Shareable Deliverables
+
+- `deliverables/security-pre-audit-report-2026-03-23.md`
+- `deliverables/legal-compliance-pre-audit-report-2026-03-23.md`
+- `deliverables/third-party-security-audit-brief-v1.md`
+- `deliverables/third-party-legal-review-brief-v1.md`
+- `deliverables/third-party-audit-options-v1.md`
 
 ## Templates
 

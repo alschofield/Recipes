@@ -8,6 +8,17 @@ Enrich newly created ingredients with machine-generated metadata without relying
 
 - Run judge pass for ingredients created by LLM fallback when metadata fields are missing.
 
+## Candidate models (lightweight)
+
+- Primary: `mistral:latest` (current baseline in runtime).
+- Fallback A: `qwen3:4b` (lower footprint option when latency/cost pressure is high).
+- Fallback B: hosted OpenAI-compatible small model lane (disaster-recovery path only).
+
+Selection policy:
+
+- Prefer local-first low-cost model when schema and confidence thresholds pass.
+- Keep candidate list aligned with `llm/PRODUCTION-READINESS.md` and `docs/llm/serving-options.md`.
+
 ## Output fields
 
 - `category` (single primary category)

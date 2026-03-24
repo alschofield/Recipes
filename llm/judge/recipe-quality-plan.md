@@ -10,6 +10,16 @@ Generate a secondary quality score for LLM recipes using a cheap/light judge mod
 - Normalized ingredient list used for the request
 - Existing deterministic score components (if available)
 
+## Candidate models (lightweight)
+
+- Primary: `mistral:latest` (current baseline).
+- Fallback A: `qwen3:4b` (cost/latency fallback candidate).
+- Fallback B: hosted OpenAI-compatible small model (DR-only, not default).
+
+Promotion preference:
+
+- Choose the cheapest candidate that preserves calibration thresholds and avoids schema regressions.
+
 ## Output fields
 
 - `overallScore` (0-1)
@@ -29,6 +39,7 @@ Generate a secondary quality score for LLM recipes using a cheap/light judge mod
 
 - Validate output against `schemas/recipe-quality-output.schema.json`.
 - Track drift between judge and deterministic scores over time.
+- Calibration guardrails are enforced with tests in `server/pkg/search/judge_calibration_test.go` (baseline + manual spot checks).
 
 ## Data-driven priors
 

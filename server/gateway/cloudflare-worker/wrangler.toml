@@ -1,0 +1,9 @@
+name = "ingrediential-api-gateway"
+main = "worker.js"
+compatibility_date = "2026-03-23"
+
+# Routes are managed in Cloudflare dashboard for this project.
+# Required runtime vars (set in dashboard):
+# - RECIPES_ORIGIN
+# - USERS_ORIGIN
+# - FAVORITES_ORIGIN

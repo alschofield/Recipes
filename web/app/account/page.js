@@ -70,10 +70,13 @@ export default async function AccountPage({ searchParams }) {
 
   return (
     <div style={{ maxWidth: 500, margin: '0 auto' }}>
-      <h1 style={{ marginBottom: '1.5rem' }}>Account</h1>
+      <div className="page-header">
+        <h1>Profile</h1>
+        <p className="muted">Manage your Ingrediential identity, credentials, and account access.</p>
+      </div>
 
       <div className="card" style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ marginBottom: '1rem' }}>Profile</h3>
+        <h3 style={{ marginBottom: '1rem' }}>Profile details</h3>
         <form action={updateAccountAction}>
           <div style={{ marginBottom: '1rem' }}>
             <label htmlFor="account-username" style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem' }}>Username</label>
@@ -98,7 +101,7 @@ export default async function AccountPage({ searchParams }) {
       </div>
 
       <div className="card">
-        <h3 style={{ marginBottom: '0.75rem' }}>Account Info</h3>
+        <h3 style={{ marginBottom: '0.75rem' }}>Security snapshot</h3>
         <p className="muted" style={{ fontSize: '0.9rem' }}>
           Role: <strong>{session.role}</strong>
         </p>

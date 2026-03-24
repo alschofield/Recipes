@@ -46,6 +46,18 @@ server/lib/*
 mobile/.expo/
 mobile/.expo-shared/
 mobile/dist/
+mobile/**/.gradle/
+mobile/**/build/
+mobile/**/.idea/
+mobile/**/DerivedData/
+mobile/**/xcuserdata/
+mobile/**/project.xcworkspace/
+mobile/**/local.properties
+mobile/**/signing.properties
+mobile/**/*.jks
+mobile/**/*.keystore
+mobile/**/*.p12
+mobile/**/*.mobileprovision
 
 # Docker and local infra
 docker-data/
@@ -73,3 +85,9 @@ datasets/raw/server-lib/*.csv
 *.zip
 *.tar
 *.tar.gz
+
+# Generated launch gate reports
+docs/ops/v1-local-preflight-latest.md
+docs/ops/v1-runtime-smoke-latest.md
+docs/ops/v1-open-gates-snapshot.md
+docs/ops/v1-gate-dashboard-latest.md

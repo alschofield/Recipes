@@ -71,6 +71,8 @@ Use this track when running your own inference service to avoid per-request prov
 - [ ] Set `LLM_PROMPT_PROFILE_DEFAULT` and `LLM_PROMPT_PROFILE_COMPLEX` for runtime routing
 - [ ] Set `LLM_ENABLE_SAFETY_REPAIR` and repair timeout for one-pass recovery
 - [ ] Set `LLM_JUDGE_ENABLED`, `LLM_JUDGE_MODEL`, and `LLM_JUDGE_MIN_CONFIDENCE` for metadata/secondary-score policy
+- [ ] Set `LLM_FALLBACK_CANARY_PERCENT` for controlled fallback rollout percentages
+- [ ] Set `LLM_FALLBACK_DISABLED` emergency switch policy (`false` by default)
 - [ ] Set and document request timeout for fallback generation path
 
 ### 2) Promotion flow

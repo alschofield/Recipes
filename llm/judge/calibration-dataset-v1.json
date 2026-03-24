@@ -1,0 +1,68 @@
+{
+  "version": "v1",
+  "updatedAt": "2026-03-23",
+  "notes": "Seed calibration set for judge reliability checks against deterministic baseline behavior.",
+  "ingredientMetadataCases": [
+    {
+      "id": "ing-chicken-thigh",
+      "canonicalName": "chicken thigh",
+      "expectedCategory": "meat",
+      "expectedAllergenHints": [],
+      "expectedRiskHints": ["cook to 74c/165f"],
+      "minConfidence": 0.65
+    },
+    {
+      "id": "ing-peanut-butter",
+      "canonicalName": "peanut butter",
+      "expectedCategory": "nut",
+      "expectedAllergenHints": ["peanut"],
+      "expectedRiskHints": [],
+      "minConfidence": 0.65
+    },
+    {
+      "id": "ing-kidney-beans",
+      "canonicalName": "kidney bean",
+      "expectedCategory": "legume",
+      "expectedAllergenHints": [],
+      "expectedRiskHints": ["boil before slow-cooking"],
+      "minConfidence": 0.65
+    },
+    {
+      "id": "ing-scallion",
+      "canonicalName": "green onion",
+      "expectedCategory": "vegetable",
+      "expectedAllergenHints": [],
+      "expectedRiskHints": [],
+      "minConfidence": 0.60
+    }
+  ],
+  "recipeQualityCases": [
+    {
+      "id": "rq-safe-balanced",
+      "description": "Balanced, coherent recipe with explicit safety note",
+      "deterministicOverall": 0.68,
+      "expectedJudgeOverallMin": 0.60,
+      "expectedJudgeOverallMax": 0.95,
+      "minConfidence": 0.65,
+      "manualNotes": "Should score strong coherence and safety completeness"
+    },
+    {
+      "id": "rq-unsafe-chicken",
+      "description": "Recipe missing safe chicken temperature guidance",
+      "deterministicOverall": 0.52,
+      "expectedJudgeOverallMin": 0.10,
+      "expectedJudgeOverallMax": 0.55,
+      "minConfidence": 0.65,
+      "manualNotes": "Judge should penalize safety completeness"
+    },
+    {
+      "id": "rq-overcomplex-low-clarity",
+      "description": "Complex dish with poor sequencing and vague steps",
+      "deterministicOverall": 0.58,
+      "expectedJudgeOverallMin": 0.20,
+      "expectedJudgeOverallMax": 0.65,
+      "minConfidence": 0.65,
+      "manualNotes": "Judge should penalize coherence and technique execution"
+    }
+  ]
+}

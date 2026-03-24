@@ -1,0 +1,5 @@
+example.com
+allrecipes.com
+foodnetwork.com
+tasty.co
+unknown-license

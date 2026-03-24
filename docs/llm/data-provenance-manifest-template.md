@@ -36,3 +36,9 @@ Record every dataset or corpus segment used for training/fine-tuning/eval.
 - Approved by:
 - Approval date:
 - Expiration/re-review date:
+
+## Repo implementation references
+
+- Example manifest: `llm/train/datasets/provenance-manifest.v1.json`
+- Validation script: `llm/train/datasets/validate_provenance.py`
+- Denylist: `llm/train/datasets/source-denylist.txt`

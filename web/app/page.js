@@ -5,21 +5,24 @@ export default async function HomePage() {
   const session = await getSession()
 
   return (
-    <div className="page-wrap" style={{ textAlign: 'center', paddingTop: '1.8rem' }}>
-      <h1 style={{ fontSize: '2.3rem', marginBottom: '0.75rem' }}>Find recipes from your ingredients</h1>
-      <p className="muted" style={{ marginBottom: '2rem', fontSize: '1.1rem' }}>
-        Enter what you have. We find what you can make.
-      </p>
-
-      <Link href="/recipes" className="btn btn-primary" style={{ fontSize: '1rem', padding: '0.75rem 2rem' }}>
-        Search Recipes
-      </Link>
-
-      {!session && (
-        <p style={{ marginTop: '2rem', fontSize: '0.95rem' }}>
-          <Link href="/signup">Create an account</Link> to save favorites and manage your profile.
+    <div className="page-wrap home-hero-wrap">
+      <section className="card home-hero" aria-label="Ingrediential intro">
+        <p className="hero-kicker">Ingrediential</p>
+        <h1>Cook great meals from what you already have.</h1>
+        <p className="hero-copy muted">
+          Ingredient-first search, reliable favorites sync, and fast recipe detail workflows for everyday cooking.
         </p>
-      )}
+        <div className="hero-actions">
+          <Link href="/recipes" className="btn btn-primary">
+            Start Discovering Recipes
+          </Link>
+          {!session && (
+            <Link href="/signup" className="btn btn-secondary">
+              Create Free Account
+            </Link>
+          )}
+        </div>
+      </section>
     </div>
   )
 }

@@ -52,6 +52,8 @@ type SearchResultItem struct {
 	ID                 string         `json:"id"`
 	Name               string         `json:"name"`
 	Source             string         `json:"source"`
+	BlendSlot          int            `json:"blendSlot"`
+	RankingReason      string         `json:"rankingReason"`
 	MatchPercent       float64        `json:"matchPercent"`
 	MatchedIngredients []string       `json:"matchedIngredients"`
 	MissingIngredients []string       `json:"missingIngredients"`
@@ -358,13 +360,17 @@ func HandleSearch(w http.ResponseWriter, r *http.Request) {
 		return compareSearchResults(candidates[i], candidates[j], grouped)
 	})
 
-	results := candidates
-	if shouldTriggerLLMFallback(req.DBOnly, candidates) {
-		generated, err := generateAndStoreFallbackRecipes(ctx, req, normalized, aliases)
-		if err == nil && len(generated) > 0 {
-			results = append(results, generated...)
+	dbResults := candidates
+	generated := []SearchResultItem{}
+	if shouldExecuteLLMFallback(cacheKey, req.DBOnly, candidates) {
+		generated, err = generateAndStoreFallbackRecipes(ctx, req, normalized, aliases)
+		if err != nil {
+			generated = []SearchResultItem{}
 		}
 	}
+
+	results := blendSearchResults(req, normalized, dbResults, generated)
+	annotateBlendMetadata(results)
 
 	total := len(results)
 	start := (page - 1) * pageSize

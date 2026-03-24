@@ -27,9 +27,12 @@ func RemoveFavorite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if result.RowsAffected() == 0 {
-		response.NotFound(w, "Favorite not found")
-		return
+	writeRemoveFavoriteResponse(w, result.RowsAffected())
+}
+
+func writeRemoveFavoriteResponse(w http.ResponseWriter, rowsAffected int64) {
+	if rowsAffected == 0 {
+		w.Header().Set("Idempotency-Status", "replayed")
 	}
 
 	w.WriteHeader(http.StatusNoContent)

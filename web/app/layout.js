@@ -23,8 +23,8 @@ const monoFont = IBM_Plex_Mono({
 })
 
 export const metadata = {
-  title: 'Recipes',
-  description: 'Find recipes from your ingredients',
+  title: 'Ingrediential',
+  description: 'Cook smarter with ingredient-first recipe search',
 }
 
 export const viewport = {
@@ -46,8 +46,8 @@ export default async function RootLayout({ children }) {
         <div className="app-shell">
           <a className="skip-link" href="#main-content">Skip to main content</a>
           <aside className="app-sidebar" aria-label="Sidebar">
-            <Link href="/" className="brand">Recipes</Link>
-            <p className="muted" style={{ marginTop: '0.5rem', fontSize: '0.83rem' }}>Ingredient intelligence workspace</p>
+            <Link href="/" className="brand">Ingrediential</Link>
+            <p className="muted" style={{ marginTop: '0.5rem', fontSize: '0.83rem' }}>Ingredient-first cooking studio</p>
             <nav className="side-nav" aria-label="Primary">
               <Link href="/">Home</Link>
               <Link href="/recipes">Recipes</Link>
@@ -67,9 +67,9 @@ export default async function RootLayout({ children }) {
           </aside>
           <div className="app-frame">
             <header className="app-topbar" role="banner">
-              <div>
-                <p className="muted" style={{ fontSize: '0.82rem' }}>Recipes Platform</p>
-                <p style={{ fontWeight: 600 }}>Quality-first recipe operations</p>
+              <div className="topbar-title-wrap">
+                <p className="topbar-kicker">Ingrediential V1</p>
+                <p className="topbar-title">Plan less. Cook better. Waste less.</p>
               </div>
               <div className="user-actions">
               {session ? (

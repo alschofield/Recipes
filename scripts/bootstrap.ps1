@@ -6,7 +6,9 @@ function Has-Cmd($name) {
 
 if (Has-Cmd task) {
   Write-Host "[bootstrap] task: ok"
+  $haveTask = $true
 } else {
+  $haveTask = $false
   if (Has-Cmd winget) {
     Write-Host "[bootstrap] Installing task via winget..."
     winget install --id Task.Task --accept-source-agreements --accept-package-agreements
@@ -17,7 +19,9 @@ if (Has-Cmd task) {
 
 if (Has-Cmd make) {
   Write-Host "[bootstrap] make: ok"
+  $haveMake = $true
 } else {
+  $haveMake = $false
   Write-Host "[bootstrap] make missing (optional). Task is the primary cross-platform runner."
 }
 
@@ -40,3 +44,9 @@ if (Has-Cmd docker) {
 }
 
 Write-Host "[bootstrap] Done. Next: task setup (or make setup)"
+
+if (-not $haveTask -and -not $haveMake) {
+  Write-Host "[bootstrap] Neither task nor make is available."
+  Write-Host "[bootstrap] Migration fallback command:"
+  Write-Host "[bootstrap] MSYS_NO_PATHCONV=1 docker run --rm -v `"$PWD/server/migrations:/migrations`" migrate/migrate -path=/migrations -database `"postgres://postgres:postgres@localhost:5432/recipes?sslmode=disable`" up"
+}

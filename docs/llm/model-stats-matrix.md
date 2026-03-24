@@ -12,11 +12,11 @@ Notes:
 
 | Model | Type | Recognizability | Params | Context | Self-host | Fine-tune path | License/commercial posture | Cost model | Est. single-GPU inference footprint | Eval schema pass % | Eval safety pass % | Eval complex pass % | Eval p95 latency ms |
 |---|---|---|---:|---:|---|---|---|---|---|---:|---:|---:|---:|
-| `Qwen/Qwen3-8B` (Ollama `qwen3:8b`) | Open-weight (pinned default) | Medium | 8B | (verify runtime context) | Yes | Yes (LoRA/QLoRA) | Model-specific (verify) | Infra cost | ~8-12GB VRAM (4-bit), ~18-24GB (BF16) | 91.67 | 100.00 | 75.00 | 105376.77 |
+| `Qwen/Qwen3-8B` (Ollama `qwen3:8b`) | Open-weight (pinned default) | Medium | 8B | 32,768 native; 131,072 with YaRN | Yes | Yes (LoRA/QLoRA) | Apache-2.0 (commercial-friendly) | Infra cost | ~8-12GB VRAM (4-bit), ~18-24GB (BF16) | 91.67 | 100.00 | 75.00 | 105376.77 |
 | `Qwen/Qwen2.5-7B-Instruct` | Open-weight (historical baseline) | Medium | 7.61B | 131k | Yes | Yes (LoRA/QLoRA) | Apache-2.0 (commercial-friendly) | Infra cost | ~6-8GB VRAM (4-bit), ~16-20GB (BF16) | 100.00 | 50.00 | 0.00 | 29811.54 |
 | `Qwen/Qwen2.5-14B-Instruct` | Open-weight | Medium | ~14B | 131k | Yes | Yes (LoRA/QLoRA) | Apache-2.0 | Infra cost | ~12-16GB VRAM (4-bit), ~32-40GB (BF16) | TBD | TBD | TBD | TBD |
 | `Qwen/Qwen2.5-32B-Instruct` | Open-weight | Medium | ~32B | 131k | Yes | Yes (LoRA/QLoRA) | Apache-2.0 | Infra cost | ~24-40GB VRAM (4-bit), multi-GPU BF16 | TBD | TBD | TBD | TBD |
-| `Qwen/Qwen3-4B-Instruct` (Ollama `qwen3:4b`) | Open-weight | Medium | 4B | (verify runtime context) | Yes | Yes (LoRA/QLoRA) | Model-specific (verify) | Infra cost | ~4-6GB VRAM (4-bit), ~10-14GB (BF16) | 0.00 | 0.00 | 0.00 | 60028.39 |
+| `Qwen/Qwen3-4B-Instruct` (Ollama `qwen3:4b`) | Open-weight | Medium | 4B | 32,768 native; 131,072 with YaRN | Yes | Yes (LoRA/QLoRA) | Apache-2.0 (commercial-friendly) | Infra cost | ~4-6GB VRAM (4-bit), ~10-14GB (BF16) | 0.00 | 0.00 | 0.00 | 60028.39 |
 | `mistralai/Mistral-7B-Instruct-v0.3` | Open-weight (picked) | Medium | 7B | (verify in runtime; commonly 32k-class) | Yes | Yes (LoRA/QLoRA) | Apache-2.0 (commercial-friendly) | Infra cost | ~6-8GB VRAM (4-bit), ~16-20GB (BF16) | 76.92 | 50.00 | 0.00 | 46404.18 |
 | `mistralai/Mixtral-8x7B-Instruct-v0.1` | Open-weight | Medium | MoE 8x7B | (verify in runtime) | Yes | Yes (LoRA path more complex) | Apache-2.0 | Infra cost | Higher memory/throughput tuning required | TBD | TBD | TBD | TBD |
 | `mistralai/Mistral-Nemo-Instruct-2407` | Open-weight | Medium | ~12B | 128k | Yes | Yes (LoRA/QLoRA) | Apache-2.0 | Infra cost | ~10-14GB VRAM (4-bit), ~28-36GB (BF16) | TBD | TBD | TBD | TBD |
@@ -55,7 +55,7 @@ For local machine run data, see `local-benchmark-snapshot.md`.
 
 ## Source Notes
 
-- Qwen3 model card/docs: verify exact license and context before production sign-off.
+- Qwen3 model card/docs: Hugging Face (`License: apache-2.0`, context 32,768 native and 131,072 with YaRN).
 - Qwen2.5-7B-Instruct model card: Hugging Face (`License: apache-2.0`, params/context listed).
 - Mistral-7B-Instruct-v0.3 model card: Hugging Face (`License: apache-2.0`).
 - Llama-3.1-8B-Instruct model card: Hugging Face (`License: llama3.1`, params/context listed).

@@ -1,0 +1,5 @@
+## Copy to local.properties and adjust SDK path if needed
+## sdk.dir=/Users/you/Library/Android/sdk
+
+# API endpoint per local environment
+RECIPES_API_BASE_URL=https://api.yourdomain.com

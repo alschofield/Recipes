@@ -35,6 +35,10 @@ LLM generation and user suggestions must improve coverage without fragmenting ca
   - high-confidence match => attach existing canonical ingredient;
   - low-confidence/unmatched => create candidate entry.
 - Avoid canonical auto-creation from raw LLM output unless deterministic exact match path is satisfied.
+- Runtime policy is controlled by `INGREDIENT_POLICY_MODE`:
+  - `auto_create`: unmatched LLM ingredients can become canonical ingredients immediately.
+  - `queue_only`: unmatched LLM ingredients are queued as pending candidates (recommended for production).
+  - If unset, defaults to `queue_only` in `APP_ENV=production` and `auto_create` otherwise.
 
 ## User Contribution UX
 
@@ -61,6 +65,7 @@ LLM generation and user suggestions must improve coverage without fragmenting ca
 
 - Canonicalization hit rate (% ingredient references mapped without candidate creation).
 - Pending candidate backlog size + age.
+- SLA breach count for pending candidates (`pendingOverSLA` using `INGREDIENT_CANDIDATE_SLA_HOURS`).
 - Duplicate merge rate over time.
 - Search recall improvement after candidate resolutions.
 

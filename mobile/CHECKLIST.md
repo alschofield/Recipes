@@ -1,86 +1,37 @@
-# Mobile App Roadmap (Google Play + Apple App Store)
+# Mobile App Roadmap (V1 Blockers Only)
 
-Goal: define and ship production-ready Android and iOS experiences with reliable UX, release flow, and compliance.
+Goal: track only external/manual blockers that cannot be fully completed from repo-only automation.
 
-Only active/open work is listed here. Completed items should be moved to `../docs/archive/checklist-completed-items.md`.
+Only active/open blockers are listed here. Completed items should be moved to `../docs/archive/checklist-completed-items.md`.
 
-## Product Scope
+## V1 Product Quality Gates (Mobile)
 
-- [ ] Define core mobile jobs-to-be-done and success metrics (activation, 7-day retention, recipe saves, repeat sessions).
-  Model: `FREE_BALANCED`
-- [ ] Define offline expectations (read-only favorites, cached recipe detail, queued actions).
-  Model: `FREE_BALANCED`
-- [ ] Define notification strategy (reminders, re-engagement, moderation/admin alerts if needed).
-  Model: `FREE_FAST`
-
-## Mobile UX and Navigation
-
-- [ ] Define mobile-first IA (top app bar + bottom nav + modal filter sheets).
-  Model: `FREE_BALANCED`
-- [ ] Define touch target, spacing, and gesture rules for all high-frequency actions.
-  Model: `FREE_FAST`
-- [ ] Define empty/loading/error states for mobile screens with recovery actions.
-  Model: `FREE_FAST`
-
-## Design System Parity
-
-- [ ] Map web tokens to mobile token set (color, typography, spacing, radius, elevation).
-  Model: `FREE_BALANCED`
-- [ ] Create shared component spec for buttons, chips, cards, inputs, list rows, and status badges.
-  Model: `FREE_BALANCED`
-- [ ] Run accessibility pass for contrast, dynamic text, and screen reader labels on mobile.
+- [ ] Run post-implementation UX sanity pass and fix all P0/P1 mobile UX defects before store submission.
   Model: `CODEX_HIGH`
 
-## Mobile Architecture and Data
+## Manual Device Validation Gates
 
-- [ ] Define API usage policy for mobile (cache-first reads, retry/backoff, auth refresh behavior).
+- [ ] Run Android TalkBack manual pass using `docs/mobile/native-accessibility-manual-test-sheet-v1.md` and file defects.
   Model: `CODEX_HIGH`
-- [ ] Define feature-flag strategy for staged rollout and kill switches.
-  Model: `FREE_BALANCED`
-- [ ] Define analytics event taxonomy and funnel instrumentation for mobile journeys.
-  Model: `FREE_BALANCED`
-
-## Android Build and Release Engineering
-
-- [ ] Finalize package ID, signing key strategy, and secure key storage policy.
+- [ ] Execute Android STT matrix on real devices using `docs/mobile/voice-stt-validation-matrix-v1.md` (permission states, no recognizer devices, cancellation, degraded network).
   Model: `CODEX_HIGH`
-- [ ] Define CI build lane for internal, beta, and production tracks.
-  Model: `FREE_BALANCED`
-- [ ] Define versioning policy (`versionCode`/`versionName`) and release notes workflow.
+- [ ] Run iOS VoiceOver manual pass using `docs/mobile/native-accessibility-manual-test-sheet-v1.md` and file defects.
+  Model: `CODEX_HIGH`
+- [ ] Execute iOS STT matrix on real devices using `docs/mobile/voice-stt-validation-matrix-v1.md` (speech+mic permission combinations, interruption, locale mismatch).
+  Model: `CODEX_HIGH`
+
+## Store and Compliance Gates
+
+- [ ] Finalize Play Store and App Store asset packs/screenshots and fill remaining owner-provided fields in `docs/mobile/store-submission-pack-rc0-2026-03-23.md`.
   Model: `FREE_FAST`
-
-## iOS Build and Release Engineering
-
-- [ ] Finalize iOS bundle ID, signing certificates/profiles, and secure keychain handling.
+- [ ] Complete privacy/data safety declarations for mobile voice usage and validate policy URLs in both store consoles.
   Model: `CODEX_HIGH`
-- [ ] Define CI build lane for TestFlight internal/external testing and App Store production release.
-  Model: `FREE_BALANCED`
-- [ ] Define iOS versioning policy (`CFBundleShortVersionString`/`CFBundleVersion`) and release notes workflow.
-  Model: `FREE_FAST`
-
-## Play Store Readiness
-
-- [ ] Prepare store assets (icon, feature graphic, screenshots, optional promo video).
-  Model: `FREE_FAST`
-- [ ] Prepare privacy policy/data safety disclosures and complete content rating questionnaire.
-  Model: `CODEX_HIGH`
-- [ ] Run closed testing track and collect pre-launch report before production submission.
+- [ ] Run Play closed testing + TestFlight cycles and capture blocking findings for go/no-go decision.
   Model: `FREE_BALANCED`
 
-## Apple App Store Readiness
+## Account and Release Credentials
 
-- [ ] Prepare App Store Connect assets (app icon, screenshots by device class, preview videos if used).
-  Model: `FREE_FAST`
-- [ ] Prepare App Privacy details, data collection declarations, and required policy URLs.
-  Model: `CODEX_HIGH`
-- [ ] Run TestFlight cycle, finalize metadata, and submit with release checklist for review.
+- [ ] Provide release signing/material secrets and verify CI lanes for Android and iOS release artifacts.
   Model: `FREE_BALANCED`
-
-## Quality, Reliability, and Operations
-
-- [ ] Define device/version QA matrix and regression checklist.
+- [ ] Capture final launch approval with owner signoff after blocker triage.
   Model: `FREE_BALANCED`
-- [ ] Define crash/performance monitoring and alert thresholds.
-  Model: `FREE_BALANCED`
-- [ ] Define staged rollout plan, rollback criteria, and post-launch triage cadence.
-  Model: `CODEX_HIGH`

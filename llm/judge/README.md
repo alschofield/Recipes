@@ -1,26 +1,35 @@
-# Judge Model Workspace
+# Judge Lane
 
-This folder contains plans and contracts for lightweight judge-model usage.
+This lane covers lightweight judge-model quality controls and drift monitoring.
 
-## Purpose
+## Drift Check
 
-- Infer ingredient metadata for newly created canonical ingredients.
-- Produce a secondary recipe quality score independent of user voting.
-- Keep deterministic server scoring as fallback when judge model is unavailable.
+Use `check_drift.py` to compare current judge-related snapshot data against baseline priors:
 
-## Initial scope
+```bash
+python llm/judge/check_drift.py \
+  --snapshot llm/evals/results/nightly-123/judge-snapshot.json \
+  --baseline llm/judge/data-priors.summary.json \
+  --out-json llm/evals/results/nightly-123/judge-drift.json \
+  --out-md llm/evals/results/nightly-123/judge-drift.md
+```
 
-- Ingredient metadata enrichment (category, alias hints, allergen/risk hints, confidence).
-- Recipe quality rubric scoring (technique quality, ingredient coherence, safety completeness).
+Supported snapshot shapes:
 
-## Files
+- JSON object with `items` list (for example, ingredient catalog payload)
+- JSON object with `records` list
+- JSON list of records
 
-- `ingredient-metadata-plan.md`
-- `recipe-quality-plan.md`
-- `data-patterns-from-server-lib.md`
-- `data-priors.summary.json`
-- `prompts/ingredient-metadata.prompt.txt`
-- `prompts/recipe-quality.prompt.txt`
-- `schemas/ingredient-metadata-output.schema.json`
-- `schemas/recipe-quality-output.schema.json`
-- `calibration-template.json`
+Drift checks include:
+
+- category distribution L1 distance vs baseline categories
+- low-confidence share (default threshold `< 0.65`)
+- confidence p50 delta vs baseline p50 proxy
+
+Exit code is non-zero when thresholds are breached.
+
+## Calibration assets
+
+- `calibration-dataset-v1.json` - seed manual/automated judge calibration cases.
+- `calibration-thresholds-v1.json` - acceptance thresholds and decision policy.
+- `calibration-template.json` - run record template for calibration outcomes.

@@ -8,6 +8,7 @@ import (
 	"recipes/pkg/response"
 	"recipes/pkg/storage/postgres"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
@@ -33,17 +34,34 @@ func AddFavorite(w http.ResponseWriter, r *http.Request) {
 	err := pool.QueryRow(r.Context(),
 		`INSERT INTO favorites (user_id, recipe_id)
 		 VALUES ($1, $2)
+		 ON CONFLICT (user_id, recipe_id) DO NOTHING
 		 RETURNING id, user_id, recipe_id, created_at`,
 		userID,
 		recipeID,
 	).Scan(&created.ID, &created.UserID, &created.RecipeID, &created.CreatedAt)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			var existing favoriteResponse
+			fetchErr := pool.QueryRow(r.Context(),
+				`SELECT id, user_id, recipe_id, created_at
+				 FROM favorites
+				 WHERE user_id = $1 AND recipe_id = $2`,
+				userID,
+				recipeID,
+			).Scan(&existing.ID, &existing.UserID, &existing.RecipeID, &existing.CreatedAt)
+			if fetchErr != nil {
+				response.InternalError(w, "Failed to add favorite")
+				return
+			}
+
+			w.Header().Set("Idempotency-Status", "replayed")
+			response.WriteJSON(w, http.StatusOK, existing)
+			return
+		}
+
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			switch pgErr.Code {
-			case "23505":
-				response.Conflict(w, "Recipe is already favorited")
-				return
 			case "23503":
 				response.NotFound(w, "User or recipe not found")
 				return

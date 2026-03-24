@@ -4,7 +4,7 @@ Status: v1 locked baseline (update via checklist preflight item)
 
 ## Endpoint
 
-- `POST /recipe/search`
+- `POST /recipes/search`
 
 ## Request Body
 
@@ -35,6 +35,9 @@ Status: v1 locked baseline (update via checklist preflight item)
 - `complex=true`: optional client hint that routes LLM fallback to the complex prompt profile when fallback runs.
 - If 10 or more normalized ingredients are provided, backend treats the request as complex even when `complex` is omitted.
 - `dbOnly=true`: skip LLM fallback and return only database-backed results.
+- Strict-mode generated policy is controlled by `LLM_STRICT_GENERATED_POLICY`:
+  - `none` (default): generated recipes with missing required ingredients are excluded.
+  - `degrade_inclusive`: strict requests may include generated results that miss required ingredients.
 
 ## Ingredient Normalization Rules
 
@@ -50,6 +53,14 @@ Status: v1 locked baseline (update via checklist preflight item)
 3. Higher `recipeQualityScore` first.
 4. Lower `prepMinutes` first.
 5. Newer `updatedAt` first.
+
+## Blend Policy (DB + LLM)
+
+- Database results are ranked first using the rules above.
+- Fallback-generated results are blended with deterministic interleave.
+- Minimum generated insertions are controlled by `SEARCH_BLEND_MIN_GENERATED` (default `1`).
+- Maximum generated share is controlled by `SEARCH_BLEND_MAX_GENERATED_SHARE` (default `0.40`).
+- `SEARCH_BLEND_SEED` provides deterministic seed salt for stable ordering across pagination.
 
 ## Response Body
 
@@ -69,6 +80,8 @@ Status: v1 locked baseline (update via checklist preflight item)
       "id": "recipe_123",
       "name": "Garlic Chicken Rice Bowl",
       "source": "database",
+      "blendSlot": 1,
+      "rankingReason": "db_ranked",
       "matchPercent": 0.75,
       "matchedIngredients": ["chicken", "rice", "garlic"],
       "missingIngredients": ["soy sauce"],

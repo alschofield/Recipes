@@ -2,6 +2,7 @@ package ingredients
 
 import (
 	"context"
+	"os"
 	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,6 +15,11 @@ type ResolvedIngredient struct {
 	MatchType     string
 	Created       bool
 }
+
+const (
+	ingredientPolicyAutoCreate = "auto_create"
+	ingredientPolicyQueueOnly  = "queue_only"
+)
 
 // ResolveOrCreateForLLM maps an ingredient to canonical data.
 // If no safe match exists, it creates a canonical ingredient and logs a governance candidate row.
@@ -33,6 +39,24 @@ func ResolveOrCreateForLLM(ctx context.Context, pool *pgxpool.Pool, rawName stri
 			CanonicalName: match.CanonicalName,
 			Confidence:    match.Confidence,
 			MatchType:     match.MatchType,
+			Created:       false,
+		}, nil
+	}
+
+	if ingredientPolicyMode() == ingredientPolicyQueueOnly {
+		_, _, _ = QueueCandidate(ctx, CandidateInput{
+			RawName:        strings.TrimSpace(rawName),
+			NormalizedName: normalized,
+			Source:         "llm",
+			Status:         "pending",
+			Confidence:     0.25,
+			ResolutionNote: "Queued from LLM recipe generation; canonical auto-create disabled",
+		})
+
+		return ResolvedIngredient{
+			CanonicalName: normalized,
+			Confidence:    0.25,
+			MatchType:     "queued_candidate",
 			Created:       false,
 		}, nil
 	}
@@ -71,4 +95,26 @@ func ResolveOrCreateForLLM(ctx context.Context, pool *pgxpool.Pool, rawName stri
 		MatchType:     "created",
 		Created:       true,
 	}, nil
+}
+
+func ingredientPolicyMode() string {
+	raw := strings.ToLower(strings.TrimSpace(os.Getenv("INGREDIENT_POLICY_MODE")))
+	if raw == ingredientPolicyAutoCreate || raw == ingredientPolicyQueueOnly {
+		return raw
+	}
+
+	if isProductionEnv() {
+		return ingredientPolicyQueueOnly
+	}
+
+	return ingredientPolicyAutoCreate
+}
+
+func isProductionEnv() bool {
+	env := strings.ToLower(strings.TrimSpace(os.Getenv("APP_ENV")))
+	if env == "" {
+		env = strings.ToLower(strings.TrimSpace(os.Getenv("GO_ENV")))
+	}
+
+	return env == "production"
 }

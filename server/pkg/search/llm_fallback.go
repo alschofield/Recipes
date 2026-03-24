@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"hash/fnv"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 
 	"recipes/pkg/ingredients"
 	"recipes/pkg/llmjudge"
+	"recipes/pkg/middleware"
 	"recipes/pkg/storage/postgres"
 
 	"github.com/jackc/pgx/v5"
@@ -31,6 +33,8 @@ const (
 	defaultLLMTimeoutSeconds  = 180
 	defaultRepairTimeout      = 90
 	defaultLLMMaxTokens       = 1600
+	strictPolicyNone          = "none"
+	strictPolicyDegrade       = "degrade_inclusive"
 )
 
 type llmRuntimeConfig struct {
@@ -46,10 +50,16 @@ type llmRuntimeConfig struct {
 	RepairTimeoutSeconds int
 }
 
+type llmFallbackRollout struct {
+	Disabled      bool
+	CanaryPercent int
+}
+
 var llmFallbackMetrics = struct {
 	Requests      atomic.Uint64
 	Success       atomic.Uint64
 	RequestErrors atomic.Uint64
+	TimeoutErrors atomic.Uint64
 	SchemaErrors  atomic.Uint64
 	RepairsTried  atomic.Uint64
 	RepairsOK     atomic.Uint64
@@ -92,6 +102,57 @@ func shouldTriggerLLMFallback(dbOnly bool, dbResults []SearchResultItem) bool {
 	return top < fallbackTopMatchThreshold && len(dbResults) < fallbackMinResultCount
 }
 
+func shouldExecuteLLMFallback(cacheKey string, dbOnly bool, dbResults []SearchResultItem) bool {
+	if !shouldTriggerLLMFallback(dbOnly, dbResults) {
+		return false
+	}
+
+	rollout := currentFallbackRollout()
+	if rollout.Disabled {
+		return false
+	}
+
+	if rollout.CanaryPercent >= 100 {
+		return true
+	}
+	if rollout.CanaryPercent <= 0 {
+		return false
+	}
+
+	if strings.TrimSpace(cacheKey) == "" {
+		return true
+	}
+
+	return canaryBucket(cacheKey) <= rollout.CanaryPercent
+}
+
+func currentFallbackRollout() llmFallbackRollout {
+	canary := 100
+	rawCanary := strings.TrimSpace(os.Getenv("LLM_FALLBACK_CANARY_PERCENT"))
+	if rawCanary != "" {
+		if parsed, err := strconv.Atoi(rawCanary); err == nil {
+			canary = parsed
+		}
+	}
+	if canary < 0 {
+		canary = 0
+	}
+	if canary > 100 {
+		canary = 100
+	}
+
+	return llmFallbackRollout{
+		Disabled:      parseEnvBool("LLM_FALLBACK_DISABLED", false),
+		CanaryPercent: canary,
+	}
+}
+
+func canaryBucket(key string) int {
+	h := fnv.New32a()
+	_, _ = h.Write([]byte(key))
+	return int(h.Sum32()%100) + 1
+}
+
 func generateAndStoreFallbackRecipes(
 	ctx context.Context,
 	req SearchRequest,
@@ -99,11 +160,16 @@ func generateAndStoreFallbackRecipes(
 	aliases *aliasLookup,
 ) ([]SearchResultItem, error) {
 	llmFallbackMetrics.Requests.Add(1)
+	logLLMFallbackLifecycle(ctx, "triggered", "", nil)
 
 	raw, model, promptProfile, err := callLLMForRecipes(ctx, req, normalizedIngredients)
 	if err != nil {
 		llmFallbackMetrics.RequestErrors.Add(1)
+		if isTimeoutError(err) {
+			llmFallbackMetrics.TimeoutErrors.Add(1)
+		}
 		logLLMFallbackMetrics("request_error", promptProfile, err)
+		logLLMFallbackLifecycle(ctx, "skipped", promptProfile, err)
 		return nil, err
 	}
 
@@ -111,6 +177,7 @@ func generateAndStoreFallbackRecipes(
 	if err != nil {
 		llmFallbackMetrics.SchemaErrors.Add(1)
 		logLLMFallbackMetrics("schema_error", promptProfile, err)
+		logLLMFallbackLifecycle(ctx, "skipped", promptProfile, err)
 		return nil, err
 	}
 
@@ -124,9 +191,11 @@ func generateAndStoreFallbackRecipes(
 	for _, generated := range parsed.Recipes {
 		item, err := persistGeneratedRecipeAndBuildResult(ctx, pool, generated, req, model, promptProfile, inputSet, aliases)
 		if err != nil {
+			logLLMFallbackLifecycle(ctx, "skipped", promptProfile, err)
 			continue
 		}
 		items = append(items, item)
+		logLLMFallbackLifecycle(ctx, "persisted", promptProfile, nil)
 	}
 
 	if len(items) > 0 {
@@ -134,7 +203,9 @@ func generateAndStoreFallbackRecipes(
 		logLLMFallbackMetrics("success", promptProfile, nil)
 	} else {
 		llmFallbackMetrics.SchemaErrors.Add(1)
-		logLLMFallbackMetrics("filtered_out", promptProfile, errors.New("no generated items persisted"))
+		err := errors.New("no generated items persisted")
+		logLLMFallbackMetrics("filtered_out", promptProfile, err)
+		logLLMFallbackLifecycle(ctx, "skipped", promptProfile, err)
 	}
 
 	return items, nil
@@ -148,6 +219,7 @@ func callLLMForRecipes(ctx context.Context, req SearchRequest, normalizedIngredi
 
 	promptProfile := choosePromptProfile(req, normalizedIngredients, cfg)
 	prompt := buildLLMPrompt(req, normalizedIngredients, promptProfile, cfg)
+	logLLMFallbackLifecycle(ctx, "provider_call", promptProfile, nil)
 
 	raw, err := callLLMChat(ctx, cfg, prompt, 0.2, cfg.TimeoutSeconds)
 	if err != nil {
@@ -158,11 +230,13 @@ func callLLMForRecipes(ctx context.Context, req SearchRequest, normalizedIngredi
 		if _, parseErr := parseAndValidateLLMResponse(raw); parseErr != nil {
 			llmFallbackMetrics.RepairsTried.Add(1)
 			repairPrompt := buildLLMRepairPrompt(req, normalizedIngredients, raw, parseErr.Error(), promptProfile, cfg)
+			logLLMFallbackLifecycle(ctx, "provider_call", promptProfile, nil)
 			repaired, repairErr := callLLMChat(ctx, cfg, repairPrompt, 0.0, cfg.RepairTimeoutSeconds)
 			if repairErr == nil {
 				if _, repairedParseErr := parseAndValidateLLMResponse(repaired); repairedParseErr == nil {
 					raw = repaired
 					llmFallbackMetrics.RepairsOK.Add(1)
+					logLLMFallbackLifecycle(ctx, "repaired", promptProfile, nil)
 				}
 			}
 		}
@@ -452,17 +526,49 @@ func logLLMFallbackMetrics(event, profile string, err error) {
 		errMsg = err.Error()
 	}
 	log.Printf(
-		"llm_fallback event=%s profile=%s requests=%d success=%d request_errors=%d schema_errors=%d repairs_tried=%d repairs_ok=%d err=%q",
+		"llm_fallback event=%s profile=%s requests=%d success=%d request_errors=%d timeout_errors=%d schema_errors=%d repairs_tried=%d repairs_ok=%d err=%q",
 		event,
 		profile,
 		llmFallbackMetrics.Requests.Load(),
 		llmFallbackMetrics.Success.Load(),
 		llmFallbackMetrics.RequestErrors.Load(),
+		llmFallbackMetrics.TimeoutErrors.Load(),
 		llmFallbackMetrics.SchemaErrors.Load(),
 		llmFallbackMetrics.RepairsTried.Load(),
 		llmFallbackMetrics.RepairsOK.Load(),
 		errMsg,
 	)
+}
+
+func logLLMFallbackLifecycle(ctx context.Context, event, profile string, err error) {
+	errMsg := ""
+	if err != nil {
+		errMsg = err.Error()
+	}
+
+	log.Printf(
+		"llm_fallback_lifecycle event=%s request_id=%s profile=%s err=%q",
+		event,
+		middleware.RequestIDFromContext(ctx),
+		profile,
+		errMsg,
+	)
+}
+
+func isTimeoutError(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return true
+	}
+	if os.IsTimeout(err) {
+		return true
+	}
+	if strings.Contains(strings.ToLower(err.Error()), "timeout") {
+		return true
+	}
+	return false
 }
 
 func parseAndValidateLLMResponse(raw string) (*llmRecipeResponse, error) {
@@ -592,7 +698,9 @@ func persistGeneratedRecipeAndBuildResult(
 	}
 
 	if req.Mode == "strict" && len(missing) > 0 {
-		return SearchResultItem{}, errors.New("generated recipe not strict compatible")
+		if strictGeneratedPolicy() == strictPolicyNone {
+			return SearchResultItem{}, errors.New("generated recipe not strict compatible")
+		}
 	}
 
 	totalMinutes := prep + cook
@@ -695,6 +803,7 @@ func persistGeneratedRecipeAndBuildResult(
 		ID:                 recipeID,
 		Name:               recipeName,
 		Source:             "llm",
+		RankingReason:      rankingReasonForGenerated(req.Mode, len(missing)),
 		MatchPercent:       matchPercent,
 		MatchedIngredients: matched,
 		MissingIngredients: missing,
@@ -707,6 +816,21 @@ func persistGeneratedRecipeAndBuildResult(
 		Servings:           servings,
 		DietaryTags:        generated.DietaryTags,
 	}, nil
+}
+
+func strictGeneratedPolicy() string {
+	raw := strings.ToLower(strings.TrimSpace(os.Getenv("LLM_STRICT_GENERATED_POLICY")))
+	if raw == strictPolicyDegrade {
+		return strictPolicyDegrade
+	}
+	return strictPolicyNone
+}
+
+func rankingReasonForGenerated(mode string, missingCount int) string {
+	if strings.ToLower(strings.TrimSpace(mode)) == "strict" && missingCount > 0 && strictGeneratedPolicy() == strictPolicyDegrade {
+		return "llm_fallback_generated_strict_degraded"
+	}
+	return "llm_fallback_generated"
 }
 
 func prepPtr(v int) *int {
@@ -797,9 +921,7 @@ func upsertRecipeQualityAnalysis(ctx context.Context, tx pgx.Tx, recipeID string
 				},
 			})
 			judgeNotes = string(judgeNotesJSON)
-			if judgeResult.Confidence >= llmjudge.MinConfidence() {
-				q.Overall = (q.Overall * 0.75) + (judgeResult.OverallScore * 0.25)
-			}
+			q.Overall = calibratedOverallWithJudge(q.Overall, judgeResult.OverallScore, judgeResult.Confidence, llmjudge.MinConfidence())
 		} else {
 			judgeStatus = "failed"
 			if judgeErr != nil {
@@ -846,4 +968,12 @@ func upsertRecipeQualityAnalysis(ctx context.Context, tx pgx.Tx, recipeID string
 
 	_, err = tx.Exec(ctx, `UPDATE recipes SET quality_score = $2 WHERE id = $1`, recipeID, q.Overall)
 	return err
+}
+
+func calibratedOverallWithJudge(deterministicOverall, judgeOverall, judgeConfidence, minConfidence float64) float64 {
+	if judgeConfidence < minConfidence {
+		return deterministicOverall
+	}
+
+	return (deterministicOverall * 0.75) + (judgeOverall * 0.25)
 }

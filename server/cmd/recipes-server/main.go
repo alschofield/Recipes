@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -26,7 +27,16 @@ func main() {
 	})
 	mux.HandleFunc("GET /recipes/health/llm", search.HandleLLMHealth)
 	mux.HandleFunc("GET /recipes/metrics/llm", search.HandleLLMMetrics)
-	mux.HandleFunc("GET /recipes/metrics", metrics.Handler)
+	mux.HandleFunc("GET /recipes/metrics", func(w http.ResponseWriter, r *http.Request) {
+		payload := metrics.Snapshot()
+		payload["llmFallbackMetrics"] = map[string]any{
+			"samples": search.LLMFallbackMetricSamples("recipes-server"),
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(payload)
+	})
 
 	mux.HandleFunc("POST /recipes/search", search.HandleSearch)
 	mux.HandleFunc("GET /recipes/catalog", search.GetRecipeCatalog)

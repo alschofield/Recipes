@@ -86,3 +86,19 @@ Recovery validation checklist:
 2. Revert Nginx to last known good config.
 3. If schema migration caused issue, run migration down or restore latest DB backup.
 4. Re-run smoke test and monitor 5xx error rate.
+
+## LLM Incident Controls (Fallback)
+
+Use these runtime switches for LLM fallback incidents without code changes:
+
+1. Immediate containment:
+   - Set `LLM_FALLBACK_DISABLED=true` and redeploy recipes service.
+   - Verify `GET /api/recipes/health/llm` reports `fallbackDisabled=true`.
+2. Partial recovery with canary:
+   - Set `LLM_FALLBACK_DISABLED=false`.
+   - Start with `LLM_FALLBACK_CANARY_PERCENT=10`.
+   - Monitor `/api/recipes/metrics/llm` and `/metrics/recipes` for timeout/schema/repair-fail rates.
+3. Gradual ramp:
+   - Increase canary to `25`, `50`, `75`, then `100` only if alert thresholds remain healthy.
+4. Emergency rollback:
+   - Reapply `LLM_FALLBACK_DISABLED=true` if breaches persist.

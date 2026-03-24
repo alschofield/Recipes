@@ -25,7 +25,7 @@ This repository is organized as a monorepo so backend services, web app, docs, a
 | `web/` | Next.js 16 App Router frontend (SSR-first) | [`web/README.md`](web/README.md) |
 | `docs/` | Architecture, contracts, and runbooks | [`docs/README.md`](docs/README.md) |
 | `scripts/` | Cross-platform local bootstrap helpers | [`scripts/README.md`](scripts/README.md) |
-| `mobile/` | Reserved mobile workspace | [`mobile/README.md`](mobile/README.md) |
+| `mobile/` | Native mobile workspace (SwiftUI + Jetpack Compose lanes) | [`mobile/README.md`](mobile/README.md) |
 | `llm/` | Reserved LLM tooling/evaluation workspace | [`llm/README.md`](llm/README.md) |
 | `.github/` | CI workflow, issue/PR templates, ownership, dependency automation | See "GitHub collaboration files" below |
 

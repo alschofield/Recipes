@@ -1,0 +1,44 @@
+{
+  "version": "v1",
+  "updatedAt": "2026-03-23",
+  "records": [
+    {
+      "id": "canonical-seed-v1",
+      "lane": "ingredients",
+      "sourceName": "Recipes canonical ingredient seed",
+      "sourceUrl": "datasets/derived/server-lib/canonical_ingredient_seed_v1.csv",
+      "originType": "first-party-derived",
+      "retrievedDateUtc": "2026-03-23",
+      "licenseType": "internal",
+      "commercialUseAllowed": true,
+      "derivativeWorksAllowed": true,
+      "attributionRequired": false,
+      "shareAlikeRequired": false,
+      "legalReviewReference": "internal-review-2026-03-23",
+      "approvedForEval": true,
+      "approvedForFineTune": true,
+      "approvedForProductionInference": true,
+      "approvedBy": "platform-team",
+      "approvalDateUtc": "2026-03-23"
+    },
+    {
+      "id": "kaggle-train-json",
+      "lane": "recipes",
+      "sourceName": "Kaggle ingredients train set",
+      "sourceUrl": "datasets/raw/server-lib/kaggle ingredients dataset.zip::train.json",
+      "originType": "third-party-public",
+      "retrievedDateUtc": "2026-03-23",
+      "licenseType": "review-required",
+      "commercialUseAllowed": false,
+      "derivativeWorksAllowed": false,
+      "attributionRequired": true,
+      "shareAlikeRequired": false,
+      "legalReviewReference": "pending-legal-kaggle-train-json",
+      "approvedForEval": true,
+      "approvedForFineTune": false,
+      "approvedForProductionInference": false,
+      "approvedBy": "pending",
+      "approvalDateUtc": ""
+    }
+  ]
+}

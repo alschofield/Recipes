@@ -1,0 +1,104 @@
+name: Mobile Android CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/android-native/**'
+      - 'docs/mobile/**'
+      - '.github/workflows/mobile-android.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mobile/android-native/**'
+      - 'docs/mobile/**'
+      - '.github/workflows/mobile-android.yml'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: "Release track"
+        required: true
+        default: internal
+        type: choice
+        options:
+          - internal
+          - beta
+          - production
+
+jobs:
+  build-internal:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile/android-native/RecipesMobile
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build dev debug
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDevDebug :app:testDevDebugUnitTest
+
+      - name: Upload debug apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-dev-debug-apk
+          path: mobile/android-native/RecipesMobile/app/build/outputs/apk/dev/debug/*.apk
+          if-no-files-found: warn
+
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.track != 'internal' }}
+    needs: build-internal
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.track == 'production' && 'production' || 'staging' }}
+    defaults:
+      run:
+        working-directory: mobile/android-native/RecipesMobile
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build prod release bundle
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:bundleProdRelease
+
+      - name: Upload Google Play bundle
+        if: ${{ secrets.ANDROID_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.recipes.mobile
+          releaseFiles: mobile/android-native/RecipesMobile/app/build/outputs/bundle/prodRelease/app-prod-release.aab
+          track: ${{ inputs.track == 'beta' && 'beta' || 'production' }}
+          status: completed
+
+      - name: Release not configured
+        if: ${{ secrets.ANDROID_PLAY_SERVICE_ACCOUNT_JSON == '' }}
+        run: |
+          echo "Skipping Play upload: missing ANDROID_PLAY_SERVICE_ACCOUNT_JSON secret"

@@ -15,7 +15,9 @@ install_hint() {
 
 if have task; then
   echo "[bootstrap] task: ok ($(task --version 2>/dev/null || echo installed))"
+  HAVE_TASK=1
 else
+  HAVE_TASK=0
   if have brew; then
     echo "[bootstrap] Installing task via brew..."
     brew install go-task/tap/go-task
@@ -32,7 +34,9 @@ fi
 
 if have make; then
   echo "[bootstrap] make: ok ($(make --version | head -n 1))"
+  HAVE_MAKE=1
 else
+  HAVE_MAKE=0
   if have brew; then
     echo "[bootstrap] make missing (optional). Install with: brew install make"
   elif have apt-get; then
@@ -61,3 +65,9 @@ else
 fi
 
 echo "[bootstrap] Done. Next: task setup (or make setup)"
+
+if [[ "${HAVE_TASK}" -eq 0 && "${HAVE_MAKE}" -eq 0 ]]; then
+  echo "[bootstrap] Neither task nor make is available."
+  echo "[bootstrap] Migration fallback command:"
+  echo "[bootstrap] MSYS_NO_PATHCONV=1 docker run --rm -v \"$(pwd)/server/migrations:/migrations\" migrate/migrate -path=/migrations -database \"postgres://postgres:postgres@localhost:5432/recipes?sslmode=disable\" up"
+fi

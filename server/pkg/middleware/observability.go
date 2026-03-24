@@ -124,6 +124,14 @@ func (m *MetricsCollector) Middleware(next http.Handler) http.Handler {
 }
 
 func (m *MetricsCollector) Handler(w http.ResponseWriter, r *http.Request) {
+	payload := m.Snapshot()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(payload)
+}
+
+func (m *MetricsCollector) Snapshot() map[string]any {
 	total := m.totalRequests.Load()
 	latency := m.totalLatencyMs.Load()
 	average := 0.0
@@ -131,7 +139,7 @@ func (m *MetricsCollector) Handler(w http.ResponseWriter, r *http.Request) {
 		average = float64(latency) / float64(total)
 	}
 
-	WriteJSON := map[string]any{
+	return map[string]any{
 		"service":           m.serviceName,
 		"requestsTotal":     total,
 		"requestsInFlight":  m.inFlightRequests.Load(),
@@ -140,10 +148,6 @@ func (m *MetricsCollector) Handler(w http.ResponseWriter, r *http.Request) {
 		"observedAt":        time.Now().UTC().Format(time.RFC3339Nano),
 		"errorRateEstimate": safeRate(m.errorRequests.Load(), total),
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(WriteJSON)
 }
 
 func safeRate(numerator, denominator uint64) float64 {

@@ -3,11 +3,14 @@ package search
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func TestShouldTriggerLLMFallback(t *testing.T) {
@@ -66,6 +69,42 @@ func TestShouldTriggerLLMFallback(t *testing.T) {
 				t.Fatalf("shouldTriggerLLMFallback() = %v, want %v", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestShouldExecuteLLMFallbackRespectsEmergencyDisable(t *testing.T) {
+	t.Setenv("LLM_FALLBACK_DISABLED", "true")
+	t.Setenv("LLM_FALLBACK_CANARY_PERCENT", "100")
+
+	got := shouldExecuteLLMFallback("cache-key", false, []SearchResultItem{})
+	if got {
+		t.Fatal("expected fallback to be disabled")
+	}
+}
+
+func TestShouldExecuteLLMFallbackRespectsCanaryPercent(t *testing.T) {
+	t.Setenv("LLM_FALLBACK_DISABLED", "false")
+	t.Setenv("LLM_FALLBACK_CANARY_PERCENT", "0")
+
+	got := shouldExecuteLLMFallback("cache-key", false, []SearchResultItem{})
+	if got {
+		t.Fatal("expected fallback to be skipped at 0 percent canary")
+	}
+}
+
+func TestShouldExecuteLLMFallbackCanaryAllowsSubsetByBucket(t *testing.T) {
+	t.Setenv("LLM_FALLBACK_DISABLED", "false")
+	key := "canary-seed-key"
+	bucket := canaryBucket(key)
+	t.Setenv("LLM_FALLBACK_CANARY_PERCENT", strconv.Itoa(bucket))
+
+	if !shouldExecuteLLMFallback(key, false, []SearchResultItem{}) {
+		t.Fatalf("expected fallback to execute when percent equals bucket (%d)", bucket)
+	}
+
+	t.Setenv("LLM_FALLBACK_CANARY_PERCENT", strconv.Itoa(bucket-1))
+	if shouldExecuteLLMFallback(key, false, []SearchResultItem{}) {
+		t.Fatalf("expected fallback to skip when percent is below bucket (%d)", bucket)
 	}
 }
 
@@ -358,5 +397,71 @@ func TestHandleLLMHealthDegradedWhenMissingKey(t *testing.T) {
 
 	if body["status"] != "degraded" {
 		t.Fatalf("expected status degraded, got %v", body["status"])
+	}
+}
+
+func TestIsTimeoutError(t *testing.T) {
+	if !isTimeoutError(context.DeadlineExceeded) {
+		t.Fatal("expected context deadline exceeded to be timeout")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Nanosecond)
+	defer cancel()
+	<-ctx.Done()
+	if !isTimeoutError(ctx.Err()) {
+		t.Fatal("expected timed-out context error to be timeout")
+	}
+
+	if isTimeoutError(errors.New("boom")) {
+		t.Fatal("expected non-timeout error to be false")
+	}
+}
+
+func TestLLMFallbackAlertSnapshot(t *testing.T) {
+	t.Setenv("LLM_ALERT_TIMEOUT_RATE_THRESHOLD", "0.10")
+	t.Setenv("LLM_ALERT_SCHEMA_ERROR_RATE_THRESHOLD", "0.20")
+	t.Setenv("LLM_ALERT_REPAIR_FAIL_RATE_THRESHOLD", "0.50")
+
+	alert := llmFallbackAlertSnapshot(llmFallbackMetricsSnapshot{
+		Requests:      10,
+		TimeoutErrors: 2,
+		SchemaErrors:  1,
+		RepairsTried:  4,
+		RepairsOK:     1,
+	})
+
+	if alert.Status != "degraded" {
+		t.Fatalf("expected degraded status, got %q", alert.Status)
+	}
+	if !alert.Breaches["timeoutRate"] {
+		t.Fatal("expected timeoutRate breach")
+	}
+	if alert.Breaches["schemaErrorRate"] {
+		t.Fatal("did not expect schemaErrorRate breach")
+	}
+	if !alert.Breaches["repairFailRate"] {
+		t.Fatal("expected repairFailRate breach")
+	}
+}
+
+func TestStrictGeneratedPolicyDefault(t *testing.T) {
+	t.Setenv("LLM_STRICT_GENERATED_POLICY", "")
+	if got := strictGeneratedPolicy(); got != strictPolicyNone {
+		t.Fatalf("expected %q, got %q", strictPolicyNone, got)
+	}
+}
+
+func TestStrictGeneratedPolicyDegradeInclusive(t *testing.T) {
+	t.Setenv("LLM_STRICT_GENERATED_POLICY", strictPolicyDegrade)
+	if got := strictGeneratedPolicy(); got != strictPolicyDegrade {
+		t.Fatalf("expected %q, got %q", strictPolicyDegrade, got)
+	}
+}
+
+func TestRankingReasonForGeneratedStrictDegraded(t *testing.T) {
+	t.Setenv("LLM_STRICT_GENERATED_POLICY", strictPolicyDegrade)
+	reason := rankingReasonForGenerated("strict", 2)
+	if reason != "llm_fallback_generated_strict_degraded" {
+		t.Fatalf("unexpected reason: %q", reason)
 	}
 }

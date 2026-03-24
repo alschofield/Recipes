@@ -1,6 +1,6 @@
 # Design Modernization v1
 
-This document defines the macro UI direction for the Recipes web app so implementation decisions stay consistent across pages.
+This document defines the macro UI direction for the Ingrediential web app so implementation decisions stay consistent across pages.
 
 ## Goals
 

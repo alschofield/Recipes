@@ -23,6 +23,7 @@ Reference contract docs:
 - `train/qlora/pilot-plan.md`
 - `judge/ingredient-metadata-plan.md`
 - `judge/recipe-quality-plan.md`
+- `judge/README.md`
 - `PRODUCTION-READINESS.md`
 
 Local quick start:

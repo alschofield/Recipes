@@ -68,9 +68,12 @@ export default async function FavoritesPage({ searchParams }) {
 
   return (
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      <h1 style={{ marginBottom: '1rem' }}>Favorites</h1>
+      <div className="page-header">
+        <h1>Saved Recipes</h1>
+        <p className="muted">Your Ingrediential shortlist for recipes you want to revisit quickly.</p>
+      </div>
 
-      <form action={addFavoriteAction} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+      <form action={addFavoriteAction} className="card" style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.2rem' }}>
         <label htmlFor="favorite-recipe-id" className="sr-only">Recipe ID to add to favorites</label>
         <input id="favorite-recipe-id" name="recipeID" type="text" placeholder="Recipe ID to favorite" style={{ flex: 1 }} />
         <button type="submit" className="btn btn-primary">Add</button>
@@ -79,22 +82,24 @@ export default async function FavoritesPage({ searchParams }) {
       {error && <p className="error-text" style={{ marginBottom: '1rem' }}>{error}</p>}
 
       {favorites.length === 0 ? (
-        <p className="muted">No favorites yet.</p>
+        <p className="muted">No saved recipes yet. Add one from Discover to build your shortlist.</p>
       ) : (
-        favorites.map((fav) => (
-          <div key={fav.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <strong>{fav.recipeName || fav.recipeId}</strong>
-              <span className="muted" style={{ fontSize: '0.8rem', marginLeft: '0.75rem' }}>
-                {new Date(fav.createdAt).toLocaleDateString()}
-              </span>
+        <div className="favorites-list">
+          {favorites.map((fav) => (
+            <div key={fav.id} className="card favorites-row">
+              <div>
+                <strong>{fav.recipeName || fav.recipeId}</strong>
+                <span className="muted" style={{ fontSize: '0.8rem', marginLeft: '0.75rem' }}>
+                  saved {new Date(fav.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              <form action={removeFavoriteAction}>
+                <input type="hidden" name="recipeID" value={fav.recipeId} />
+                <button className="btn btn-danger" type="submit">Remove</button>
+              </form>
             </div>
-            <form action={removeFavoriteAction}>
-              <input type="hidden" name="recipeID" value={fav.recipeId} />
-              <button className="btn btn-danger" type="submit">Remove</button>
-            </form>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   )

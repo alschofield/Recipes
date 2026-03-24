@@ -1,0 +1,100 @@
+name: Nightly LLM Evals
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  nightly-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Run nightly evals
+        env:
+          EVAL_BASE_URL: ${{ secrets.LLM_EVAL_BASE_URL }}
+          EVAL_API_KEY: ${{ secrets.LLM_EVAL_API_KEY }}
+          EVAL_MODEL: ${{ vars.LLM_EVAL_MODEL }}
+          JUDGE_DRIFT_SNAPSHOT_URL: ${{ secrets.JUDGE_DRIFT_SNAPSHOT_URL }}
+          JUDGE_DRIFT_AUTH_TOKEN: ${{ secrets.JUDGE_DRIFT_AUTH_TOKEN }}
+          JUDGE_DRIFT_MAX_CATEGORY_L1: ${{ vars.JUDGE_DRIFT_MAX_CATEGORY_L1 }}
+          JUDGE_DRIFT_MAX_LOW_CONF_SHARE: ${{ vars.JUDGE_DRIFT_MAX_LOW_CONF_SHARE }}
+          JUDGE_DRIFT_MAX_CONF_P50_DELTA: ${{ vars.JUDGE_DRIFT_MAX_CONF_P50_DELTA }}
+        run: |
+          if [ -z "$EVAL_BASE_URL" ] || [ -z "$EVAL_API_KEY" ]; then
+            echo "LLM eval secrets are not configured; skipping nightly eval run"
+            mkdir -p llm/evals/results/nightly-skipped
+            printf '{"status":"skipped","reason":"missing LLM_EVAL_BASE_URL/LLM_EVAL_API_KEY"}\n' > llm/evals/results/nightly-skipped/summary.json
+            exit 0
+          fi
+
+          MODEL="${EVAL_MODEL:-qwen3:8b}"
+          RUN_DIR="llm/evals/results/nightly-${GITHUB_RUN_ID}"
+
+          python llm/evals/run_eval.py \
+            --base-url "$EVAL_BASE_URL" \
+            --api-key "$EVAL_API_KEY" \
+            --model "$MODEL" \
+            --compare-profiles \
+            --enable-safety-repair \
+            --disable-thinking-tag \
+            --recipe-cases llm/evals/recipe_cases.jsonl \
+            --safety-cases llm/evals/safety_cases.jsonl \
+            --complex-cases llm/evals/complex_cases.jsonl \
+            --out "$RUN_DIR"
+
+          if [ -f "$RUN_DIR/profiles_summary.json" ]; then
+            python llm/evals/generate_trend_report.py \
+              --profiles "$RUN_DIR/profiles_summary.json" \
+              --out "$RUN_DIR/trend-report.md" \
+              --run-id "$GITHUB_RUN_ID"
+
+            READINESS_EXIT=0
+            python llm/evals/check_readiness_gates.py \
+              --profiles "$RUN_DIR/profiles_summary.json" \
+              --profile safety_complex_first \
+              --out-json "$RUN_DIR/readiness-gates.json" \
+              --out-md "$RUN_DIR/readiness-gates.md" || READINESS_EXIT=$?
+          else
+            READINESS_EXIT=0
+          fi
+
+          if [ -n "$JUDGE_DRIFT_SNAPSHOT_URL" ]; then
+            SNAPSHOT_PATH="$RUN_DIR/judge-snapshot.json"
+            if [ -n "$JUDGE_DRIFT_AUTH_TOKEN" ]; then
+              curl -fsSL -H "Authorization: Bearer $JUDGE_DRIFT_AUTH_TOKEN" "$JUDGE_DRIFT_SNAPSHOT_URL" -o "$SNAPSHOT_PATH"
+            else
+              curl -fsSL "$JUDGE_DRIFT_SNAPSHOT_URL" -o "$SNAPSHOT_PATH"
+            fi
+
+            python llm/judge/check_drift.py \
+              --snapshot "$SNAPSHOT_PATH" \
+              --baseline llm/judge/data-priors.summary.json \
+              --out-json "$RUN_DIR/judge-drift.json" \
+              --out-md "$RUN_DIR/judge-drift.md" \
+              --max-category-l1 "${JUDGE_DRIFT_MAX_CATEGORY_L1:-0.35}" \
+              --max-low-confidence-share "${JUDGE_DRIFT_MAX_LOW_CONF_SHARE:-0.55}" \
+              --max-confidence-p50-delta "${JUDGE_DRIFT_MAX_CONF_P50_DELTA:-0.30}"
+          else
+            printf '{"status":"skipped","reason":"missing JUDGE_DRIFT_SNAPSHOT_URL"}\n' > "$RUN_DIR/judge-drift.json"
+            printf '# Judge Drift Report\n\n- Status: `skipped`\n- Reason: `missing JUDGE_DRIFT_SNAPSHOT_URL`\n' > "$RUN_DIR/judge-drift.md"
+          fi
+
+          if [ "$READINESS_EXIT" -ne 0 ]; then
+            echo "Readiness gates failed"
+            exit "$READINESS_EXIT"
+          fi
+
+      - name: Upload eval artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-llm-evals-${{ github.run_id }}
+          path: llm/evals/results/nightly-*/
+          if-no-files-found: warn

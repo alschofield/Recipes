@@ -58,6 +58,7 @@ pnpm --dir web lint
 pnpm --dir web test
 pnpm --dir web build
 pnpm --dir web test:e2e
+npx --yes lhci autorun --config web/.lighthouserc.json
 ```
 
 ## Environment variables
@@ -72,6 +73,7 @@ Core values:
 - `NEXT_PUBLIC_API_RECIPES_PORT`
 - `NEXT_PUBLIC_API_USERS_PORT`
 - `NEXT_PUBLIC_API_FAVORITES_PORT`
+- `NEXT_TELEMETRY_ENABLED` (server-side event logging toggle)
 
 Resolution priority:
 
@@ -79,10 +81,17 @@ Resolution priority:
 2. explicit per-service URLs (`NEXT_PUBLIC_API_RECIPES_URL`, etc.)
 3. `NEXT_PUBLIC_API_URL` + per-service ports
 
+Production wiring check:
+
+```bash
+node web/scripts/verify-env-wiring.mjs web/.env.production.example
+```
+
 ## Notes
 
 - `pnpm --dir web test` is configured with `--passWithNoTests` for clean CI behavior when no unit tests are present.
-- `pnpm --dir web test:e2e` is configured with `--pass-with-no-tests` for the same reason.
+- `pnpm --dir web test:e2e` currently includes a Playwright smoke suite in `web/tests/e2e/smoke.spec.js`.
+- Lighthouse CI config for route perf/accessibility audit lives in `web/.lighthouserc.json`.
 
 ## Production notes
 

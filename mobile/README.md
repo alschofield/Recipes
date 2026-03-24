@@ -1,11 +1,16 @@
-# Mobile Workspace
+# Mobile Workspace (Native)
 
-This folder is reserved for a future mobile client.
+This workspace is native-first:
 
-Recommended future structure:
+- `ios-native/` - Swift + SwiftUI app lane
+- `android-native/` - Kotlin + Jetpack Compose app lane
+- `shared/` - shared API/domain contract assets (non-runtime shared source)
 
-- `app/` or `src/` for app code
-- `assets/` for static resources
-- platform config files (`app.json`, `package.json`, etc.)
+Current scaffold status:
 
-When initialized, link this README from the root README section if tooling or commands differ.
+- Android baseline project scaffold in `android-native/RecipesMobile/`.
+- iOS XcodeGen template scaffold in `ios-native/RecipesMobile/`.
+
+Planning and policy docs live in `../docs/mobile/`.
+
+Use this folder for native project files, platform-specific CI lanes, and mobile release artifacts.

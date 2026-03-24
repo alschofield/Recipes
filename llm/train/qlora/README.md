@@ -17,6 +17,32 @@ This folder tracks the first fine-tuning pilot for `qwen3:8b` focused on:
 
 - `pilot-plan.md`: gates, dataset contract, and run flow
 - `training-record-template.json`: fill one record per run
+- `create_training_record.py`: helper to assemble a filled run record from eval artifacts
+
+## Create a run record
+
+```bash
+python llm/train/qlora/create_training_record.py \
+  --template llm/train/qlora/training-record-template.json \
+  --run-id qlora-pilot-001 \
+  --date 2026-03-23 \
+  --dataset-name recipes-sft \
+  --dataset-version v1 \
+  --train-count 7000 \
+  --val-count 1500 \
+  --test-count 1500 \
+  --dataset-hash sha256:replace \
+  --adapter-path llm/train/qlora/artifacts/qlora-pilot-001 \
+  --logs-path llm/train/qlora/logs/qlora-pilot-001 \
+  --eval-output-path llm/evals/results/qlora-pilot-001 \
+  --eval-summary llm/evals/results/qlora-pilot-001/safety_complex_first/summary.json \
+  --baseline-profile-summary llm/evals/results/qwen3-8b-profile-compare-repair-20260322/profiles_summary.json \
+  --baseline-profile safety_complex_first \
+  --timeout-rate-percent 0.5 \
+  --decision-outcome iterate \
+  --decision-notes "initial pilot record" \
+  --out llm/train/qlora/runs/qlora-pilot-001.json
+```
 
 ## Minimum pilot outputs
 

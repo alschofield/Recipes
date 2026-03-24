@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"recipes/pkg/create"
 	"recipes/pkg/delete"
@@ -35,6 +36,7 @@ func main() {
 	// Create new user (signup)
 	mux.Handle("POST /users/new", middleware.Chain(
 		http.HandlerFunc(create.HandleSignup),
+		middleware.IdempotencyKey(middleware.ParseIdempotencyTTL(os.Getenv("IDEMPOTENCY_KEY_TTL"), 24*time.Hour)),
 		middleware.RateLimit(rate.Limit(2), 5),
 	))
 
@@ -44,9 +46,34 @@ func main() {
 		middleware.RateLimit(rate.Limit(3), 8),
 	))
 
+	// Refresh access token
+	mux.Handle("POST /users/refresh", middleware.Chain(
+		http.HandlerFunc(search.HandleRefresh),
+		middleware.RateLimit(rate.Limit(4), 10),
+	))
+
+	// Logout session family
+	mux.Handle("POST /users/logout", middleware.Chain(
+		http.HandlerFunc(search.HandleLogout),
+		middleware.RateLimit(rate.Limit(4), 10),
+	))
+
+	// Logout current client session only
+	mux.Handle("POST /users/logout/session", middleware.Chain(
+		http.HandlerFunc(search.HandleLogoutSession),
+		middleware.RateLimit(rate.Limit(4), 10),
+	))
+
 	// Get user profile
 	mux.Handle("GET /users/{userid}", middleware.Chain(
 		http.HandlerFunc(search.GetProfile),
+		middleware.RequireAuth,
+		middleware.RequireSelfOrAdmin("userid"),
+	))
+
+	// List active sessions for user
+	mux.Handle("GET /users/{userid}/sessions", middleware.Chain(
+		http.HandlerFunc(search.ListSessions),
 		middleware.RequireAuth,
 		middleware.RequireSelfOrAdmin("userid"),
 	))

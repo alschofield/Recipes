@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -299,13 +300,44 @@ func IngredientMetrics(w http.ResponseWriter, r *http.Request) {
 		FROM ingredient_candidates
 		WHERE status = 'pending'`).Scan(&avgPendingAgeHours)
 
+	slaHours := ingredientCandidateSLAHours()
+	var pendingOverSLA int
+	_ = pool.QueryRow(r.Context(), `
+		SELECT COUNT(*)
+		FROM ingredient_candidates
+		WHERE status = 'pending'
+		  AND EXTRACT(EPOCH FROM (NOW() - created_at)) / 3600 > $1`, slaHours).Scan(&pendingOverSLA)
+
+	var oldestPendingAgeHours float64
+	_ = pool.QueryRow(r.Context(), `
+		SELECT COALESCE(MAX(EXTRACT(EPOCH FROM (NOW() - created_at)) / 3600), 0)
+		FROM ingredient_candidates
+		WHERE status = 'pending'`).Scan(&oldestPendingAgeHours)
+
 	response.WriteJSON(w, http.StatusOK, map[string]any{
-		"canonicalIngredients": canonicalCount,
-		"aliases":              aliasCount,
-		"pendingCandidates":    pendingCount,
-		"resolvedCandidates":   resolvedCount,
-		"avgPendingAgeHours":   avgPendingAgeHours,
+		"canonicalIngredients":  canonicalCount,
+		"aliases":               aliasCount,
+		"pendingCandidates":     pendingCount,
+		"resolvedCandidates":    resolvedCount,
+		"avgPendingAgeHours":    avgPendingAgeHours,
+		"oldestPendingAgeHours": oldestPendingAgeHours,
+		"pendingOverSLA":        pendingOverSLA,
+		"slaHours":              slaHours,
 	})
+}
+
+func ingredientCandidateSLAHours() float64 {
+	raw := strings.TrimSpace(os.Getenv("INGREDIENT_CANDIDATE_SLA_HOURS"))
+	if raw == "" {
+		return 48
+	}
+
+	v, err := strconv.ParseFloat(raw, 64)
+	if err != nil || v <= 0 {
+		return 48
+	}
+
+	return v
 }
 
 func ListIngredientCatalog(w http.ResponseWriter, r *http.Request) {
